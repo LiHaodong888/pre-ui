@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function loginByUsername(username, password) {
+export function loginByUsername(username, password, captcha) {
   const data = {
     username,
-    password
+    password,
+    captcha
   }
   // 登录
   return request({
@@ -12,6 +13,7 @@ export function loginByUsername(username, password) {
     params: data
   })
 }
+
 // 登出
 export function logout() {
   return request({

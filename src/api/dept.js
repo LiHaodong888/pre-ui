@@ -19,6 +19,13 @@ export const getDept = () => {
     method: 'get'
   })
 }
+// 获取部门树
+export const getDeptTree = () => {
+  return request({
+    url: '/dept/tree',
+    method: 'get'
+  })
+}
 
 // 更新部门
 export const updateDept = (data) => {
