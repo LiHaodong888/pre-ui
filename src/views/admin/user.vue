@@ -15,6 +15,7 @@
         <el-tree
           :data="deptData"
           :props="deptTreeProps"
+          :expand-on-click-node="false"
           default-expand-all
           @node-click="handleNodeClick"
         />
@@ -77,13 +78,13 @@
 
           <el-table-column label="状态" width="70" align="center">
             <template slot-scope="scope">
-              <template v-if="scope.row.lockFlag == 0">
-                <el-tag>正常</el-tag>
-              </template>
-              <template v-if="scope.row.lockFlag == 9">
-                <el-tag type="danger">锁定</el-tag>
-              </template>
+              <div v-for="item in dicts" :key="item.id">
+                <el-tag v-if="scope.row.lockFlag.toString() === item.value" :type="scope.row.lockFlag ? '' : 'info'">{{
+                  item.label }}
+                </el-tag>
+              </div>
             </template>
+
           </el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="120" align="center">
@@ -107,19 +108,19 @@
         </div>
 
         <!-- 添加或修改对话框 -->
-        <el-dialog :title="operation?'新增':'编辑'" :visible.sync="dialogFormVisible" center>
+        <el-dialog :title="operation?'新增用户':'编辑用户'" :visible.sync="dialogFormVisible" center>
           <el-form :model="dataForm" label-width="80px" size="small" label-position="right">
 
             <el-form-item label="用户名" :label-width="formLabelWidth" required>
-              <el-input v-model="dataForm.username" auto-complete="off" />
+              <el-input v-model="dataForm.username" auto-complete="off" placeholder="请输入用户名" />
             </el-form-item>
 
             <el-form-item label="邮箱" :label-width="formLabelWidth">
-              <el-input v-model="dataForm.email" auto-complete="off" />
+              <el-input v-model="dataForm.email" auto-complete="off" placeholder="请输入邮箱" />
             </el-form-item>
 
             <el-form-item label="手机" :label-width="formLabelWidth">
-              <el-input v-model="dataForm.phone" auto-complete="off" />
+              <el-input v-model="dataForm.phone" auto-complete="off" placeholder="请输入手机" />
             </el-form-item>
 
             <el-form-item label="部门" :label-width="formLabelWidth">
@@ -133,7 +134,7 @@
             </el-form-item>
 
             <el-form-item label="岗位" :label-width="formLabelWidth">
-              <el-select v-model="dataForm.jobId" placeholder="请先选择部门">
+              <el-select v-model="dataForm.jobId" placeholder="请先选择部门" style="width: 100%">
                 <el-option
                   v-for="item in jobs"
                   :key="item.id"
@@ -183,11 +184,13 @@ import { getRoleList } from '@/api/roles'
 import { getDept } from '@/api/dept'
 import { formatData } from '@/utils/webUtils'
 import PopupTreeInput from '@/components/PopupTreeInput'
+import initDict from '@/mixins/initDict'
 
 export default {
   components: {
     PopupTreeInput
   },
+  mixins: [initDict],
   data() {
     return {
       // 用户列表
@@ -229,6 +232,8 @@ export default {
     this.adminList()
     this.findUserRoles()
     this.findDeptTree()
+    // 加载数据字典
+    this.getDict('user_status')
   },
   methods: {
     // 加载用户角色信息
@@ -240,13 +245,11 @@ export default {
     // 加载部门列表
     findDeptTree: function() {
       getDept().then((res) => {
-        if (res.data.code == 200) {
-          this.deptData = res.data.data
-        }
+        this.deptData = res.data.data
       })
     },
     // 部门菜单树选中
-    deptTreeCurrentChangeHandle(data, node) {
+    deptTreeCurrentChangeHandle(data) {
       this.dataForm.deptId = data.deptId
       this.dataForm.deptName = data.name
       this.getJobs(data.deptId)
@@ -254,9 +257,7 @@ export default {
     // 加载岗位列表
     getJobs(id) {
       getJobListByDeptId(id).then(res => {
-        if (res.data.code == 200) {
-          this.jobs = res.data.data
-        }
+        this.jobs = res.data.data
       })
     },
 
@@ -267,7 +268,6 @@ export default {
       params.append('pageSize', this.pageSize)
       params.append('deptId', this.deptId)
       getUserList(params).then(response => {
-        console.log(response)
         this.loading = false
         this.tableData = response.data.data.userList
         this.total = response.data.data.total
@@ -314,7 +314,7 @@ export default {
       })
         .then(() => {
           restPass(row.userId).then(response => {
-            if (response.data.code == 200) {
+            if (response.data.code === 200) {
               that.$message({
                 type: 'success',
                 message: '重置密码成功'
@@ -343,7 +343,7 @@ export default {
       })
         .then(() => {
           deleteUser(row.userId).then(response => {
-            if (response.data.code == 200) {
+            if (response.data.code === 200) {
               this.$message({
                 type: 'success',
                 message: '操作成功'
@@ -375,7 +375,7 @@ export default {
       return data.label.indexOf(value) !== -1
     },
     handleNodeClick(data) {
-      this.deptId = data.deptId == 0 ? 0 : data.deptId
+      this.deptId = data.deptId === 0 ? 0 : data.deptId
       this.adminList()
     },
     submitForm: function() {
@@ -386,7 +386,7 @@ export default {
       this.dataForm.userRoles = userRoles
       if (!this.operation) {
         editUser(this.dataForm).then(response => {
-          if (response.data.code == 200) {
+          if (response.data.code === 200) {
             this.$message({
               type: 'success',
               message: '操作成功'
@@ -402,7 +402,7 @@ export default {
         })
       } else {
         addUser(this.dataForm).then(response => {
-          if (response.data.code == 200) {
+          if (response.data.code === 200) {
             this.$message({
               type: 'success',
               message: '操作成功'
@@ -423,56 +423,8 @@ export default {
 </script>
 
 <style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    margin: 0, 0, 0, 10px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-    text-align: center;
-  }
-
-  .imgBody {
-    width: 100px;
-    height: 100px;
-    border: solid 2px #ffffff;
-    float: left;
-    position: relative;
-  }
-
-  .uploadImgBody {
-    margin-left: 5px;
-    width: 100px;
-    height: 100px;
-    border: dashed 1px #c0c0c0;
-    float: left;
-    position: relative;
-  }
-
   .uploadImgBody :hover {
     border: dashed 1px #00ccff;
-  }
-
-  .inputClass {
-    position: absolute;
-  }
-
-  .img {
-    width: 100%;
-    height: 100%;
   }
 
   img {

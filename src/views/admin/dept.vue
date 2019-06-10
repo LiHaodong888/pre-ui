@@ -6,6 +6,13 @@
       <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">查找
       </el-button>
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加部门</el-button>
+      <el-button
+        class="filter-item"
+        size="mini"
+        type="warning"
+        icon="el-icon-more"
+        @click="expand"
+      >{{ defaultExpandAll ? '折叠' : '展开' }}</el-button>
     </div>
     <!--表格树内容栏-->
     <tree-table :key="key" :default-expand-all="defaultExpandAll" :data="tableTreeData" :columns="columns" size="small">
@@ -21,7 +28,7 @@
 
     <!-- 新增修改界面 -->
     <el-dialog
-      :title="!dataForm.deptId ? '新增' : '修改'"
+      :title="!dataForm.deptId ? '新增部门' : '修改部门'"
       width="40%"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
@@ -35,8 +42,8 @@
         style="text-align:left;"
         @keyup.enter.native="submitForm()"
       >
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="dataForm.name" placeholder="名称" />
+        <el-form-item label="机构名称" prop="name">
+          <el-input v-model="dataForm.name" placeholder="请输入机构名称" />
         </el-form-item>
         <el-form-item label="上级机构" prop="parentName">
           <popup-tree-input
@@ -83,7 +90,7 @@ export default {
       key: 1,
       columns: [
         {
-          label: '名称',
+          label: '机构名称',
           key: 'name',
           expand: true
         },
@@ -152,6 +159,7 @@ export default {
         sort: 0
       }
     },
+    // 编辑界面
     handleEdit: function(row) {
       this.isEditForm = true
       this.dialogVisible = true
@@ -166,7 +174,6 @@ export default {
     findTreeData: function() {
       this.loading = true
       getDept().then(res => {
-        console.log(res.data)
         this.tableTreeData = res.data.data
         this.popupTreeData = this.getParentMenuTree(res.data.data)
         this.loading = false
@@ -182,7 +189,7 @@ export default {
       return [parent]
     },
     // 机构树选中
-    handleTreeSelectChange(data, node) {
+    handleTreeSelectChange(data) {
       this.dataForm.parentId = data.deptId
       this.dataForm.parentName = data.name
     },
@@ -202,12 +209,15 @@ export default {
       })
         .then(() => {
           deleteDept(row.deptId).then(response => {
-            console.log(response)
-            this.$message({
-              type: 'success',
-              message: '操作成功'
-            })
-            that.findTreeData()
+            if (response.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '操作成功'
+              })
+              that.findTreeData()
+            } else {
+              this.$message({ message: res.data.msg, type: 'error' })
+            }
           })
         })
         .catch(() => {
@@ -224,9 +234,8 @@ export default {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.editLoading = true
-              console.log(this.dataForm)
               updateDept(this.dataForm).then((res) => {
-                if (res.data.code == 200) {
+                if (res.data.code === 200) {
                   this.$message({ message: '操作成功', type: 'success' })
                 } else {
                   this.$message({ message: res.data.msg, type: 'error' })
@@ -245,7 +254,7 @@ export default {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.editLoading = true
               saveDept(this.dataForm).then((res) => {
-                if (res.data.code == 200) {
+                if (res.data.code === 200) {
                   this.$message({ message: '操作成功', type: 'success' })
                 } else {
                   this.$message({ message: res.data.msg, type: 'error' })
@@ -259,6 +268,10 @@ export default {
           }
         })
       }
+    },
+    expand() {
+      this.$parent.expand = !this.$parent.expand
+      this.defaultExpandAll = this.$parent.expand
     }
   }
 }

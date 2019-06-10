@@ -15,7 +15,7 @@
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加岗位</el-button>
     </div>
 
-    <el-table :data="tableData" style="width: 100%" size="mini">
+    <el-table v-loading="loading" :data="tableData" style="width: 100%" size="mini">
 
       <el-table-column type="selection" />
       <el-table-column label="序号" width="60" align="center">
@@ -24,7 +24,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="名称" width="200" align="center">
+      <el-table-column label="岗位名称" width="200" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.jobName }}</span>
         </template>
@@ -71,10 +71,10 @@
     <el-dialog :title="title" :visible.sync="dialogFormVisible">
       <el-form ref="form" :model="form" :rules="dataRule">
 
-        <el-form-item label="名称" :label-width="formLabelWidth" prop="jobName">
-          <el-input v-model="form.jobName" auto-complete="off" />
+        <el-form-item label="岗位名称" :label-width="formLabelWidth" prop="jobName">
+          <el-input v-model="form.jobName" auto-complete="off" placeholder="请输入岗位名称" />
         </el-form-item>
-        <el-form-item label="部门" :label-width="formLabelWidth">
+        <el-form-item label="所属部门" :label-width="formLabelWidth">
           <popup-tree-input
             :data="deptData"
             :props="deptTreeProps"
@@ -140,7 +140,8 @@ export default {
       // 表单校验
       dataRule: {
         jobName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }]
-      }
+      },
+      loading: false
     }
   },
   created() {
@@ -164,13 +165,11 @@ export default {
     // 加载部门列表
     findDeptTree: function() {
       getDept().then((res) => {
-        if (res.data.code == 200) {
-          this.deptData = res.data.data
-        }
+        this.deptData = res.data.data
       })
     },
     // 部门菜单树选中
-    deptTreeCurrentChangeHandle(data, node) {
+    deptTreeCurrentChangeHandle(data) {
       console.log(data)
       this.form.deptId = data.deptId
       this.form.deptName = data.name
@@ -215,7 +214,7 @@ export default {
       })
         .then(() => {
           deleteJob(row.id).then(response => {
-            if (response.data.code == 200) {
+            if (response.data.code === 200) {
               this.$message({
                 type: 'success',
                 message: '操作成功'
@@ -241,7 +240,7 @@ export default {
         if (valid) {
           if (this.isEditForm) {
             updateJob(this.form).then(response => {
-              if (response.data.code == 200) {
+              if (response.data.code === 200) {
                 this.$message({
                   type: 'success',
                   message: '操作成功'
@@ -257,7 +256,7 @@ export default {
             })
           } else {
             addJob(this.form).then(response => {
-              if (response.data.code == 200) {
+              if (response.data.code === 200) {
                 this.$message({
                   type: 'success',
                   message: '操作成功'
@@ -274,10 +273,6 @@ export default {
           }
         }
       })
-    },
-    // 时间格式化
-    dateFormat: function(row, column, cellValue, index) {
-      return format(row[column.property])
     }
   }
 }

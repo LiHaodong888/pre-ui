@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="app-container">
     <!-- 查询和其他操作 -->
@@ -13,6 +14,14 @@
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFind">查找
       </el-button>
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加菜单</el-button>
+
+      <el-button
+        class="filter-item"
+        size="mini"
+        type="warning"
+        icon="el-icon-more"
+        @click="expand"
+      >{{ defaultExpandAll ? '折叠' : '展开' }}</el-button>
     </div>
 
     <!--表格树内容栏-->
@@ -86,7 +95,7 @@
           <popup-tree-input
             :data="popupTreeData"
             :props="popupTreeProps"
-            :prop="dataForm.parentName == null||dataForm.parentName == ''?'根节点':dataForm.parentName"
+            :prop="dataForm.parentName == null||dataForm.parentName === ''?'根节点':dataForm.parentName"
             :node-key="''+dataForm.parentId"
             :current-change-handle="handleTreeSelectChange"
           />
@@ -188,7 +197,7 @@ export default {
           label: '名称',
           key: 'name',
           expand: true,
-          width: 150,
+          width: 170,
           align: 'center'
         },
         {
@@ -305,7 +314,7 @@ export default {
       this.dataForm.icon = icon
     },
     // 菜单树选中
-    handleTreeSelectChange(data, node) {
+    handleTreeSelectChange(data) {
       this.dataForm.parentId = data.menuId
       this.dataForm.parentName = data.name
     },
@@ -320,8 +329,7 @@ export default {
       })
         .then(() => {
           deleteMenu(row.menuId).then(response => {
-            console.log(response)
-            if (response.data.code == 200) {
+            if (response.data.code === 200) {
               this.$message({
                 type: 'success',
                 message: '操作成功'
@@ -347,7 +355,7 @@ export default {
     submitForm: function() {
       if (!this.isEditForm) {
         saveMenu(this.dataForm).then(response => {
-          if (response.data.code == 200) {
+          if (response.data.code === 200) {
             this.$message({
               type: 'success',
               message: '操作成功'
@@ -363,7 +371,7 @@ export default {
         })
       } else {
         updateMenu(this.dataForm).then(response => {
-          if (response.data.code == 200) {
+          if (response.data.code === 200) {
             this.$message({
               type: 'success',
               message: '操作成功'
@@ -378,6 +386,10 @@ export default {
           }
         })
       }
+    },
+    expand() {
+      this.$parent.expand = !this.$parent.expand
+      this.defaultExpandAll = this.$parent.expand
     }
   }
 }

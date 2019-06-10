@@ -15,7 +15,7 @@
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加角色</el-button>
     </div>
 
-    <el-table :data="tableData" style="width: 100%" size="mini">
+    <el-table v-loading="loading" :data="tableData" style="width: 100%" size="mini">
 
       <el-table-column type="selection" />
       <el-table-column label="序号" width="60" align="center">
@@ -61,36 +61,30 @@
       <el-form ref="form" :model="form" :rules="dataRule">
 
         <el-form-item label="角色名称" :label-width="formLabelWidth" prop="roleName">
-          <el-input v-model="form.roleName" auto-complete="off" />
+          <el-input v-model="form.roleName" auto-complete="off" placeholder="请输入角色名称" />
         </el-form-item>
 
         <el-form-item label="角色标识" :label-width="formLabelWidth" prop="roleCode">
-          <el-input v-model="form.roleCode" auto-complete="off" />
+          <el-input v-model="form.roleCode" auto-complete="off" placeholder="请输入角色标识" />
         </el-form-item>
 
         <el-form-item label="角色介绍" :label-width="formLabelWidth" prop="roleDesc">
-          <el-input v-model="form.roleDesc" auto-complete="off" />
+          <el-input v-model="form.roleDesc" auto-complete="off" placeholder="请输入角色介绍" />
         </el-form-item>
 
         <el-form-item label="数据范围" :label-width="formLabelWidth">
-          <el-select v-model="form.dataScope" placeholder="请选择数据范围" @change="changeScope">
+          <el-select v-model="form.dataScope" placeholder="请选择数据范围" style="width: 100%" @change="changeScope">
             <el-option
               v-for="item in dateScopes"
-              :key="item"
-              :label="item"
-              :value="item"
+              :key="item.id"
+              :label="item.des"
+              :value="item.id"
             />
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="form.dataScope === '自定义'" label="数据权限" :label-width="formLabelWidth">
-          <popup-tree-input
-            :data="deptData"
-            :props="defaultProps"
-            :prop="form.deptName"
-            :node-key="''+form.deptId"
-            :current-change-handle="deptTreeCurrentChangeHandle"
-          />
+        <el-form-item v-if="form.dataScope === 4" label="数据权限" :label-width="formLabelWidth">
+          <treeselect v-model="deptIds" :options="deptData" multiple placeholder="请选择" />
         </el-form-item>
 
         <el-form-item label="访问菜单" :label-width="formLabelWidth">
@@ -126,14 +120,14 @@
 import { getRoleList, addRole, updateRole, deleteRole, findRoleMenus } from '@/api/roles'
 import { getMenus } from '@/api/menu'
 import { parseTime } from '@/utils/index'
-import { getDept } from '@/api/dept'
-import PopupTreeInput from '@/components/PopupTreeInput'
-
+import { getDeptTree } from '@/api/dept'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { formatData, getPar } from '@/utils/webUtils'
 
 export default {
   components: {
-    PopupTreeInput
+    Treeselect
   },
   data() {
     return {
@@ -143,7 +137,23 @@ export default {
       dialogFormVisible: false, // 控制弹出框
       formLabelWidth: '120px',
       isEditForm: false,
-      dateScopes: ['全部', '本级', '自定义'],
+      dateScopes: [{
+        id: 1,
+        des: '全部'
+      },
+      {
+        id: 2,
+        des: '本级'
+      },
+      {
+        id: 3,
+        des: '本级以及子级'
+      },
+      {
+        id: 4,
+        des: '自定义'
+      }
+      ],
       deptData: [],
       deptTreeProps: {
         label: 'name',
@@ -155,7 +165,7 @@ export default {
         roleCode: '',
         roleDesc: '',
         roleMenus: [],
-        dataScope: '',
+        dataScope: 0,
         deptName: '',
         deptId: 1
       },
@@ -174,7 +184,9 @@ export default {
         roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
         roleDesc: [{ required: true, message: '角色介绍不能为空', trigger: 'blur' }],
         roleCode: [{ required: true, message: '角色标识不能为空', trigger: 'blur' }]
-      }
+      },
+      loading: false,
+      deptIds: []
     }
   },
   created() {
@@ -185,13 +197,13 @@ export default {
     parseTime,
     // 获取角色
     roleList: function() {
+      this.loading = true
       getRoleList().then(response => {
-        if (response.data.code == 200) {
-          this.tableData = response.data.data
-        }
+        this.tableData = response.data.data
+        this.loading = false
       })
     },
-    // 获取数据
+    // 获取菜单树
     findTreeData: function() {
       this.menuLoading = true
       getMenus().then((res) => {
@@ -200,7 +212,7 @@ export default {
       })
     },
     // 树节点选择监听
-    handleMenuCheckChange(data, check, subCheck) {
+    handleMenuCheckChange(data, check) {
       if (check) {
         // 节点选中时同步选中父节点
         const parentId = data.parentId
@@ -247,6 +259,7 @@ export default {
         roleCode: '',
         roleDesc: '',
         roleMenus: [],
+        roleDepts: [],
         dataScope: '',
         deptName: '',
         deptId: 1
@@ -261,28 +274,20 @@ export default {
       this.title = '编辑角色'
       this.form = row
       this.handleRoleSelectChange(row.roleId)
+      this.deptIds = []
+      if (this.form.dataScope === 4) {
+        this.findDeptTree()
+      }
+      for (let i = 0; i < this.form.roleDepts.length; i++) {
+        this.deptIds[i] = this.form.roleDepts[i]
+      }
     },
 
     // 角色选择改变监听
     handleRoleSelectChange(id) {
       this.selectRole.id = id
-      const _this = this
       findRoleMenus(id).then((res) => {
         this.$refs.menuTree.setCheckedNodes(res.data.data)
-        //   console.log(res.data.data)
-        //   this.menuIds = []
-        //   res.data.data.forEach(function(data, index) {
-        //     let add = true
-        //     // for (let i = 0; i < res.data.data.length; i++) {
-        //     //   if (data.menuId === res.data.data[i].pid) {
-        //     //     add = false
-        //     //     break
-        //     //   }
-        //     // }
-        //     if (add) {
-        //       _this.menuIds.push(data.menuId)
-        //     }
-        //   })
       })
     },
 
@@ -295,7 +300,7 @@ export default {
       })
         .then(() => {
           deleteRole(row.roleId).then(response => {
-            if (response.data.code == 200) {
+            if (response.data.code === 200) {
               this.$message({
                 type: 'success',
                 message: '操作成功'
@@ -317,6 +322,24 @@ export default {
         })
     },
     submitForm: function() {
+      if (this.form.dataScope === 4 && this.deptIds.length === 0) {
+        this.$message({
+          message: '自定义数据权限不能为空',
+          type: 'warning'
+        })
+        return
+      } else {
+        const depts = []
+        if (this.form.dataScope === 4) {
+          for (let i = 0; i < this.deptIds.length; i++) {
+            depts.push(
+              this.deptIds[i]
+            )
+          }
+          this.form.roleDepts = depts
+        }
+      }
+
       const roleId = this.selectRole.id > 0 ? this.selectRole.id : 0
       const checkedNodes = this.$refs.menuTree.getCheckedNodes(false, true)
       const roleMenus = []
@@ -326,12 +349,13 @@ export default {
       }
       // 得到选中树的角色id和菜单id
       this.form.roleMenus = roleMenus
+      // 得到部门ids
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.isEditForm) {
             updateRole(this.form).then(response => {
               console.log(response)
-              if (response.data.code == 200) {
+              if (response.data.code === 200) {
                 this.$message({
                   type: 'success',
                   message: '操作成功'
@@ -347,7 +371,7 @@ export default {
             })
           } else {
             addRole(this.form).then(response => {
-              if (response.data.code == 200) {
+              if (response.data.code === 200) {
                 this.$message({
                   type: 'success',
                   message: '操作成功'
@@ -365,25 +389,15 @@ export default {
         }
       })
     },
-    // 时间格式化
-    dateFormat: function(row, column, cellValue, index) {
-      return format(row[column.property])
-    },
     // 加载部门列表
     findDeptTree: function() {
-      getDept().then((res) => {
-        if (res.data.code == 200) {
-          this.deptData = res.data.data
-        }
+      getDeptTree().then((res) => {
+        this.deptData = res.data.data
       })
     },
-    // 部门菜单树选中
-    deptTreeCurrentChangeHandle(data, node) {
-      this.form.deptId = data.deptId
-      this.form.deptName = data.name
-    },
     changeScope() {
-      if (this.form.dataScope === '自定义') {
+      this.deptIds = []
+      if (this.form.dataScope === 4) {
         this.findDeptTree()
       }
     }
