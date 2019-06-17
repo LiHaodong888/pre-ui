@@ -48,7 +48,7 @@ const user = {
     LoginByUsername({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
+        loginByUsername(username, userInfo.password, userInfo.captcha).then(response => {
           const data = response.data
           commit('SET_TOKEN', data.data)
           setToken(data.data)
@@ -60,7 +60,7 @@ const user = {
     },
 
     // 获取用户信息
-    GetUserInfo({ commit, state }) {
+    GetUserInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getUserInfo().then(response => {
           // 由于mockjs 不支持自定义状态码只能这样hack
@@ -68,7 +68,6 @@ const user = {
           //   reject('Verification failed, please login again.')
           // }
           const data = response.data.data
-          console.log(response)
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             // 角色
             commit('SET_ROLES', data.roles)
@@ -103,8 +102,8 @@ const user = {
     // },
 
     // 登出
-    LogOut({ commit, state }) {
-      return new Promise((resolve, reject) => {
+    LogOut({ commit }) {
+      return new Promise((resolve) => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
