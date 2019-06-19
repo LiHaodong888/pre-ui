@@ -1,160 +1,363 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
-      <el-col :xs="24" :sm="24" :md="8" :lg="6" :xl="5">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>个人信息</span>
-          </div>
-          <div>
-            <!--<div style="text-align: center">-->
-            <!--<el-upload-->
-            <!--:show-file-list="false"-->
-            <!--:on-success="handleSuccess"-->
-            <!--:on-error="handleError"-->
-            <!--:headers="headers"-->
-            <!--:action="updateAvatarApi"-->
-            <!--class="avatar-uploader">-->
-            <!--<img v-if="user.avatar" :src="user.avatar" title="点击上传头像" class="avatar">-->
-            <!--<i v-else class="el-icon-plus avatar-uploader-icon"/>-->
-            <!--</el-upload>-->
-            <!--</div>-->
-            <ul class="user-info">
-              <li>
-                <svg-icon icon-class="user1" />
-                用户名称
-                <div class="user-right">{{ user.username }}</div>
-              </li>
-              <li>
-                <svg-icon icon-class="phone" />
-                手机号码
-                <div class="user-right">{{ user.phone }}</div>
-              </li>
-              <li>
-                <svg-icon icon-class="email" />
-                用户邮箱
-                <div class="user-right">{{ user.email }}</div>
-              </li>
-              <li>
-                <svg-icon icon-class="dept" />
-                所属部门
-                <div class="user-right"> {{ user.dept }} / {{ user.job }}</div>
-              </li>
-              <li>
-                <svg-icon icon-class="date" />
-                创建日期
-                <div class="user-right">{{ user.createTime }}</div>
-              </li>
-              <li>
-                <svg-icon icon-class="anq" />
-                安全设置
-                <div class="user-right">
-                  <a @click="$refs.pass.dialog = true">修改密码</a>
-                  <a @click="$refs.email.dialog = true">修改邮箱</a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :sm="24" :md="16" :lg="18" :xl="19">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>操作日志</span>
-            <!--<div style="display:inline-block;float: right;cursor: pointer" @click="refresh"><i :class="ico"/></div>-->
-          </div>
-          <!--<log ref="log"/>-->
-        </el-card>
-      </el-col>
-    </el-row>
-    <!--<updateEmail ref="email" :email="user.email"/>-->
-    <!--<updatePass ref="pass"/>-->
+
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="个人信息" name="first">
+        <div class="user" style="width: 600px">
+          <el-form ref="form" :model="user" label-width="80px">
+
+            <el-form-item label="用户名">
+              <el-input v-model="user.username" />
+            </el-form-item>
+            <el-form-item label="头像">
+              <el-upload
+                class="avatar-uploader"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="">
+                <i v-else class="el-icon-plus avatar-uploader-icon" />
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="手机号">
+              <el-input v-model="user.phone" />
+            </el-form-item>
+            <el-form-item label="用户邮箱">
+              <el-input v-model="user.email" :disabled="true" />
+            </el-form-item>
+            <el-form-item label="所属部门">
+              <el-input v-model="user.deptName" :disabled="true" />
+            </el-form-item>
+
+            <el-form-item>
+              <el-button type="primary">提交</el-button>
+              <el-button>取消</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+
+      </el-tab-pane>
+
+      <el-tab-pane label="修改密码" name="second">
+
+        <div style="width: 400px">
+          <el-form
+            ref="passForm"
+            :model="passForm"
+            status-icon
+            :rules="rules"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item label="原密码" prop="oldPass">
+              <el-input v-model="passForm.oldPass" type="password" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="密码" prop="newPass">
+              <el-input v-model="passForm.newPass" type="password" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="确认密码" prop="checkPass">
+              <el-input v-model="passForm.checkPass" type="password" autocomplete="off" />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="updatePass('passForm')">修改</el-button>
+              <el-button @click="resetForm('passForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+
+      </el-tab-pane>
+      <el-tab-pane label="修改邮箱" name="third">
+
+        <div style="width: 500px">
+          <el-form ref="mailForm" :model="mailForm" label-width="100px" class="demo-ruleForm">
+            <el-form-item
+              prop="email"
+              label="邮箱"
+              :rules="[{ required: true, message: '请输入邮箱地址', trigger: 'blur' },
+                       { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }]"
+            >
+              <el-input v-model="mailForm.email" style="width: 250px;" />
+              <el-button :loading="codeLoading" :disabled="isDisabled" @click="sendCode">{{ buttonName }}</el-button>
+            </el-form-item>
+
+            <el-form-item
+              label="验证码"
+              prop="code"
+              :rules="[{ required: true, message: '验证码不能为空'}]"
+            >
+              <el-input v-model="mailForm.code" type="age" autocomplete="off" />
+            </el-form-item>
+            <el-form-item
+              label="密码"
+              prop="pass"
+              :rules="[{ required: true, message: '密码不能为空'}]"
+            >
+              <el-input v-model="mailForm.pass" type="age" autocomplete="off" />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="updateEmail('mailForm')">提交</el-button>
+              <el-button @click="resetForm('mailForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
+import { getUserInfo, updatePass, resetEmail, updateEmail } from '@/api/user'
+// 创建axios的实例
+const axiosInstance = axios.create({})
+
 export default {
   name: 'Index',
-
   data() {
-    return {
-      user: {
-        username: '对的',
-        phone: 17521296869,
-        email: 'lihaodongmail@163.com',
-        dept: '研发部',
-        job: '全栈开发',
-        createTime: '2018-08-23 09:11:56'
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.passForm.checkPass !== '') {
+          this.$refs.passForm.validateField('checkPass')
+        }
+        callback()
       }
     }
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.passForm.newPass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+    return {
+      user: {
+        username: '',
+        phone: 0,
+        email: '',
+        deptName: '',
+        jobName: '',
+        createTime: ''
+      },
+      activeName: 'first',
+      imageUrl: 'http://pic.52lhd.com/955136-20180802172143153-443159996.png',
+      passForm: {
+        oldPass: '',
+        newPass: '',
+        checkPass: ''
+      },
+      rules: {
+        oldPass: [{ required: true, message: '原密码不能为空', trigger: 'blur' }],
+        newPass: [{ validator: validatePass, trigger: 'blur' }],
+        checkPass: [{ validator: validatePass2, trigger: 'blur' }]
+      },
+      mailForm: {
+        email: '',
+        code: '',
+        pass: ''
+      },
+      buttonName: '发送验证码',
+      isDisabled: false,
+      codeLoading: false,
+      time: 60
+    }
   },
+
+  created() {
+    this.findUserInfo()
+  },
+
   methods: {
     // parseTime,
-    formatEmail(mail) {
-      return regEmail(mail)
-    },
-    handleSuccess(response, file, fileList) {
-      this.$notify({
-        title: '头像修改成功',
-        type: 'success',
-        duration: 2500
-      })
-      store.dispatch('GetInfo').then(() => {
+    // formatEmail(mail) {
+    //   return regEmail(mail)
+    // },
+
+    // 加载用户个人信息
+    findUserInfo: function() {
+      getUserInfo().then((res) => {
+        this.user = res.data.data
       })
     },
+
+    // 修改密码
+    updatePass: function(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const params = new URLSearchParams()
+          params.append('oldPass', this.passForm.oldPass)
+          params.append('newPass', this.passForm.newPass)
+          updatePass(params).then((res) => {
+            if (res.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '操作成功'
+              })
+              this.activeName = 'second'
+              this.$refs['passForm'].resetFields()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg
+              })
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    // 修改邮箱
+    updateEmail: function(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const params = new URLSearchParams()
+          params.append('mail', this.mailForm.email)
+          params.append('code', this.mailForm.code)
+          params.append('pass', this.mailForm.pass)
+          updateEmail(params).then((res) => {
+            if (res.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '操作成功'
+              })
+              this.activeName = 'third'
+              this.$refs['mailForm'].resetFields()
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.data.msg
+              })
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+
+    // 发送邮箱验证码
+    sendCode() {
+      if (this.mailForm.email && this.mailForm.email !== '') {
+        this.codeLoading = true
+        this.buttonName = '验证码发送中'
+        const params = new URLSearchParams()
+        params.append('to', this.mailForm.email)
+        const _this = this
+        resetEmail(params).then(res => {
+          if (res.data.code === 200) {
+            this.$message({
+              showClose: true,
+              message: '发送成功，验证码有效期5分钟',
+              type: 'success'
+            })
+            this.codeLoading = false
+            this.isDisabled = true
+            this.buttonName = this.time-- + '秒后重新发送'
+            this.timer = window.setInterval(function() {
+              _this.buttonName = _this.time + '秒后重新发送'
+              --_this.time
+              if (_this.time < 0) {
+                _this.buttonName = '重新发送'
+                _this.time = 60
+                _this.isDisabled = false
+                window.clearInterval(_this.timer)
+              }
+            }, 1000)
+          }
+        }).catch(err => {
+          this.resetForm()
+          this.codeLoading = false
+          console.log(err.data.message)
+        })
+      }
+    },
+    // handleSuccess(response, file, fileList) {
+    //   this.$notify({
+    //     title: '头像修改成功',
+    //     type: 'success',
+    //     duration: 2500
+    //   })
+    //   store.dispatch('GetInfo').then(() => {
+    //   })
+    // },
     // 监听上传失败
-    handleError(e, file, fileList) {
-      const msg = JSON.parse(e.message)
-      this.$notify({
-        title: msg.message,
-        type: 'error',
-        duration: 2500
-      })
-    },
+    // handleError(e, file, fileList) {
+    //   const msg = JSON.parse(e.message)
+    //   this.$notify({
+    //     title: msg.message,
+    //     type: 'error',
+    //     duration: 2500
+    //   })
+    // },
     refresh() {
       this.ico = 'el-icon-loading'
       this.$refs.log.init()
       setTimeout(() => {
         this.ico = 'el-icon-refresh'
       }, 300)
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm(formName) {
+      if (this.$refs[formName] !== undefined) {
+        this.$refs[formName].resetFields()
+      }
+    },
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
+
+    handleAvatarSuccess(res, file) {
+      // this.imageUrl = URL.createObjectURL(file.raw)
+      const data = new FormData()
+      data.append('token', '')
+      data.append('file', file[0])
+      axiosInstance({
+        method: 'POST',
+        url: 'http://up.qiniu.com',
+        data: data
+      })
+        .then(function(res) {
+          // console.log('res',res)
+          const { base_url, path } = res.data
+          // 页面所用字段
+          self.previewAvatar = `${base_url}${path}?imageView2/1/w/154/h/154`
+          // 传给后台不完整
+          self.formData.avatar = `${path}`
+        })
+        .catch(function(err) {
+          console.log('err', err)
+        })
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  .avatar-uploader-icon {
-    font-size: 28px;
-    width: 120px;
-    height: 120px;
-    line-height: 120px;
-    text-align: center
-  }
 
-  .avatar {
-    width: 120px;
-    height: 120px;
-    display: block;
-    border-radius: 50%
-  }
-
-  .user-info {
-    padding-left: 0px;
-    list-style: none;
-
-    li {
-      border-bottom: 1px solid #F0F3F4;
-      border-top: 1px solid #F0F3F4;
-      padding: 11px 0px;
-      font-size: 13px;
-    }
-
-    .user-right {
-      float: right;
-
-      a {
-        color: #317EF3;
-      }
-    }
-  }
 </style>

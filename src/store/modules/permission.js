@@ -50,10 +50,9 @@ const permission = {
   },
   actions: {
 
-    GenerateRoutes({ commit }, data) {
+    GenerateRoutes({ commit }) {
       return new Promise(resolve => {
         getRouters().then(res => {
-          console.log(res.data.data)
           const accessedRoutes = filterAsyncRouter(res.data.data)
           commit('SET_ROUTES', accessedRoutes)
           resolve(accessedRoutes)
@@ -76,10 +75,6 @@ const permission = {
   }
 }
 
-export const loadView = (view) => { // 路由懒加载
-  return () => import(`@/views/${view}`)
-}
-
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap) {
   return asyncRouterMap.filter(route => {
@@ -97,6 +92,10 @@ function filterAsyncRouter(asyncRouterMap) {
     }
     return true
   })
+}
+
+export const loadView = (view) => { // 路由懒加载
+  return () => import(`@/views/${view}`)
 }
 
 export default permission

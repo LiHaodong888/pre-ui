@@ -11,7 +11,7 @@ axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API,
-  timeout: 5000
+  timeout: 8000
 })
 // request拦截器
 service.interceptors.request.use(
@@ -59,10 +59,8 @@ service.interceptors.response.use(
   error => {
     let code = 0
     try {
-      code = error.response.data.code
-      console.log(code)
+      code = error.response.status
     } catch (e) {
-      console.log(error)
       if (error.toString().indexOf('Error: timeout') !== -1) {
         Notification.error({
           title: '网络请求超时',
@@ -77,6 +75,13 @@ service.interceptors.response.use(
         })
         return Promise.reject(error)
       }
+    }
+    if (code === 504) {
+      Notification.error({
+        title: '服务器异常',
+        duration: 2500
+      })
+      return Promise.reject(error)
     }
     if (code === 401) {
       MessageBox.confirm(

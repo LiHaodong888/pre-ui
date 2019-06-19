@@ -13,18 +13,6 @@ const componentsRouter = {
   },
   children: [
     {
-      path: 'markdown',
-      component: () => import('@/views/components-demo/markdown'),
-      name: 'MarkdownDemo',
-      meta: { title: 'markdown' }
-    },
-    {
-      path: 'json-editor',
-      component: () => import('@/views/components-demo/jsonEditor'),
-      name: 'JsonEditorDemo',
-      meta: { title: 'jsonEditor' }
-    },
-    {
       path: 'avatar-upload',
       component: () => import('@/views/components-demo/avatarUpload'),
       name: 'AvatarUploadDemo',

@@ -127,8 +127,8 @@
           </el-row>
         </el-form-item>
 
-        <el-form-item v-if="dataForm.type !== 2" label="路由链接" prop="url">
-          <el-input v-model="dataForm.path" placeholder="路由链接" />
+        <el-form-item v-if="dataForm.type !== 2" label="菜单URL" prop="url">
+          <el-input v-model="dataForm.path" placeholder="菜单URL" />
         </el-form-item>
 
         <el-form-item v-if="dataForm.type !== 2" label="排序编号" prop="sort">

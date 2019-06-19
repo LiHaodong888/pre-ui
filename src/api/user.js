@@ -37,3 +37,37 @@ export function deleteUser(id) {
     method: 'delete'
   })
 }
+
+// 获取用户个人信息
+export function getUserInfo() {
+  return request({
+    url: '/user/info',
+    method: 'get'
+  })
+}
+
+// 修改密码
+export function updatePass(parms) {
+  return request({
+    url: '/user/updatePass',
+    method: 'put',
+    params: parms
+  })
+}
+// 修改邮箱
+export function updateEmail(parms) {
+  return request({
+    url: '/user/updateEmail',
+    method: 'put',
+    params: parms
+  })
+}
+
+// 发送邮箱验证码
+export function resetEmail(parms) {
+  return request({
+    url: '/user/sendMailCode',
+    method: 'post',
+    params: parms
+  })
+}

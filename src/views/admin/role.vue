@@ -73,7 +73,7 @@
         </el-form-item>
 
         <el-form-item label="数据范围" :label-width="formLabelWidth">
-          <el-select v-model="form.dataScope" placeholder="请选择数据范围" style="width: 100%" @change="changeScope">
+          <el-select v-model="form.dsType" placeholder="请选择数据范围" style="width: 100%" @change="changeScope">
             <el-option
               v-for="item in dateScopes"
               :key="item.id"
@@ -83,7 +83,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="form.dataScope === 4" label="数据权限" :label-width="formLabelWidth">
+        <el-form-item v-if="form.dsType === 4" label="数据权限" :label-width="formLabelWidth">
           <treeselect v-model="deptIds" :options="deptData" multiple placeholder="请选择" />
         </el-form-item>
 
@@ -165,7 +165,7 @@ export default {
         roleCode: '',
         roleDesc: '',
         roleMenus: [],
-        dataScope: 0,
+        dsType: 0,
         deptName: '',
         deptId: 1
       },
@@ -260,7 +260,8 @@ export default {
         roleDesc: '',
         roleMenus: [],
         roleDepts: [],
-        dataScope: '',
+        // 数据权限类型
+        dsType: '',
         deptName: '',
         deptId: 1
       }
@@ -275,7 +276,7 @@ export default {
       this.form = row
       this.handleRoleSelectChange(row.roleId)
       this.deptIds = []
-      if (this.form.dataScope === 4) {
+      if (this.form.dsType === 4) {
         this.findDeptTree()
       }
       for (let i = 0; i < this.form.roleDepts.length; i++) {
@@ -322,7 +323,7 @@ export default {
         })
     },
     submitForm: function() {
-      if (this.form.dataScope === 4 && this.deptIds.length === 0) {
+      if (this.form.dsType === 4 && this.deptIds.length === 0) {
         this.$message({
           message: '自定义数据权限不能为空',
           type: 'warning'
@@ -330,7 +331,7 @@ export default {
         return
       } else {
         const depts = []
-        if (this.form.dataScope === 4) {
+        if (this.form.dsType === 4) {
           for (let i = 0; i < this.deptIds.length; i++) {
             depts.push(
               this.deptIds[i]
@@ -354,7 +355,6 @@ export default {
         if (valid) {
           if (this.isEditForm) {
             updateRole(this.form).then(response => {
-              console.log(response)
               if (response.data.code === 200) {
                 this.$message({
                   type: 'success',

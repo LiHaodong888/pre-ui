@@ -48,11 +48,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/authredirect'),
-    hidden: true
-  },
-  {
     path: '/404',
     component: () => import('@/views/errorPage/404'),
     hidden: true
@@ -159,18 +154,6 @@ export const asyncRoutes = [
         name: '异常日志',
         component: () => import('@/views/sys/errorlog'),
         meta: { title: '异常日志', icon: 'erlog' }
-      },
-      {
-        path: 'codegen',
-        name: '代码生成',
-        component: () => import('@/views/sys/codegen'),
-        meta: { title: '代码生成', icon: 'code' }
-      },
-      {
-        path: 'email',
-        name: '邮箱工具',
-        component: () => import('@/views/sys/email'),
-        meta: { title: '邮箱工具', icon: 'email' }
       }
     ]
   },

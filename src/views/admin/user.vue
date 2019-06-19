@@ -70,7 +70,7 @@
 
           <el-table-column label="拥有角色" width="200" align="center">
             <template slot-scope="scope">
-              <el-tag v-for="item in scope.row.userRoles" :key="item.roleId" type="success" style="margin-right: 5px;">
+              <el-tag v-for="item in scope.row.roleList" :key="item.roleId" type="success" style="margin-right: 5px;">
                 {{ item.roleName }}
               </el-tag>
             </template>
@@ -145,7 +145,7 @@
             </el-form-item>
 
             <el-form-item label="角色" prop="userRoles" label-width="120px">
-              <el-select v-model="dataForm.userRoles" multiple placeholder="请选择" style="width: 100%;">
+              <el-select v-model="dataForm.roleList" multiple placeholder="请选择" style="width: 100%;">
                 <el-option
                   v-for="item in roles"
                   :key="item.id"
@@ -214,7 +214,7 @@ export default {
         email: 'lihaodongmail@163.com',
         phone: '17521296869',
         lockFlag: '' + 0,
-        userRoles: []
+        roleList: []
       },
       deptData: [],
       deptTreeProps: {
@@ -264,12 +264,12 @@ export default {
     adminList: function() {
       this.loading = true
       const params = new URLSearchParams()
-      params.append('page', this.currentPage)
-      params.append('pageSize', this.pageSize)
+      params.append('current', this.currentPage)
+      params.append('size', this.pageSize)
       params.append('deptId', this.deptId)
       getUserList(params).then(response => {
         this.loading = false
-        this.tableData = response.data.data.userList
+        this.tableData = response.data.data.records
         this.total = response.data.data.total
       })
     },
@@ -288,7 +288,7 @@ export default {
         email: 'lihaodongmail@163.com',
         phone: '17521296869',
         lockFlag: '' + 0,
-        userRoles: []
+        roleList: []
       }
     },
     // 编辑
@@ -297,12 +297,13 @@ export default {
       this.operation = false
       // this.dataForm = row
       this.dataForm = Object.assign({}, row)
+      // this.dataForm.jobId = '' + row.jobName
       // 设置选择的角色列表
       const userRoles = []
-      for (let i = 0, len = row.userRoles.length; i < len; i++) {
-        userRoles.push(row.userRoles[i].roleId)
+      for (let i = 0, len = row.roleList.length; i < len; i++) {
+        userRoles.push(row.roleList[i].roleId)
       }
-      this.dataForm.userRoles = userRoles
+      this.dataForm.roleList = userRoles
     },
 
     handRest: function(row) {
@@ -380,10 +381,10 @@ export default {
     },
     submitForm: function() {
       const userRoles = []
-      for (let i = 0, len = this.dataForm.userRoles.length; i < len; i++) {
-        userRoles.push(this.dataForm.userRoles[i])
+      for (let i = 0, len = this.dataForm.roleList.length; i < len; i++) {
+        userRoles.push(this.dataForm.roleList[i])
       }
-      this.dataForm.userRoles = userRoles
+      this.dataForm.roleList = userRoles
       if (!this.operation) {
         editUser(this.dataForm).then(response => {
           if (response.data.code === 200) {
