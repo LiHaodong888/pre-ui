@@ -29,7 +29,8 @@
             size="small"
             class="filter-item"
             style="width: 200px;"
-            placeholder="请输入管理员名"
+            placeholder="请输入用户名"
+            @keyup.enter.native="handleFind"
           />
           <el-button class="filter-item" type="primary" icon="el-icon-search" size="mini" @click="handleFind">查找
           </el-button>
@@ -136,8 +137,8 @@
             <el-form-item label="岗位" :label-width="formLabelWidth">
               <el-select v-model="dataForm.jobId" placeholder="请先选择部门" style="width: 100%">
                 <el-option
-                  v-for="item in jobs"
-                  :key="item.id"
+                  v-for="(item,index) in jobs"
+                  :key="''+ index"
                   :label="item.jobName"
                   :value="item.id"
                 />
@@ -210,7 +211,7 @@ export default {
         avatar: '',
         deptId: 1,
         deptName: '',
-        jobId: '',
+        jobId: 0,
         email: 'lihaodongmail@163.com',
         phone: '17521296869',
         lockFlag: '' + 0,
@@ -238,7 +239,9 @@ export default {
   methods: {
     // 加载用户角色信息
     findUserRoles: function() {
-      getRoleList().then((res) => {
+      const params = new URLSearchParams()
+      params.append('roleName', '')
+      getRoleList(params).then((res) => {
         this.roles = res.data.data
       })
     },
@@ -260,17 +263,19 @@ export default {
         this.jobs = res.data.data
       })
     },
-
+    // 加载用户列表
     adminList: function() {
       this.loading = true
       const params = new URLSearchParams()
       params.append('current', this.currentPage)
       params.append('size', this.pageSize)
       params.append('deptId', this.deptId)
+      params.append('username', this.keyword)
       getUserList(params).then(response => {
         this.loading = false
         this.tableData = response.data.data.records
         this.total = response.data.data.total
+        console.log(response.data.data.records)
       })
     },
     handleFind: function() {
@@ -297,7 +302,9 @@ export default {
       this.operation = false
       // this.dataForm = row
       this.dataForm = Object.assign({}, row)
-      // this.dataForm.jobId = '' + row.jobName
+      this.dataForm.jobId = row.jobId
+      // this.getJobs(this.dataForm.jobId)
+      // this.getJobs(row.jobId)
       // 设置选择的角色列表
       const userRoles = []
       for (let i = 0, len = row.roleList.length; i < len; i++) {
@@ -306,6 +313,7 @@ export default {
       this.dataForm.roleList = userRoles
     },
 
+    // 密码重置 todo
     handRest: function(row) {
       const that = this
       this.$confirm('此操作将会将该用户密码重置, 是否继续?', '提示', {
@@ -335,6 +343,7 @@ export default {
           })
         })
     },
+    // 删除用户
     handleDelete: function(row) {
       const that = this
       this.$confirm('此操作将该管理员删除, 是否继续?', '提示', {
@@ -370,11 +379,6 @@ export default {
       this.adminList()
     },
 
-    filterNode(value, data) {
-      console.log(data)
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
-    },
     handleNodeClick(data) {
       this.deptId = data.deptId === 0 ? 0 : data.deptId
       this.adminList()
@@ -386,6 +390,7 @@ export default {
       }
       this.dataForm.roleList = userRoles
       if (!this.operation) {
+        // 编辑用户
         editUser(this.dataForm).then(response => {
           if (response.data.code === 200) {
             this.$message({
@@ -402,6 +407,7 @@ export default {
           }
         })
       } else {
+        // 添加用户
         addUser(this.dataForm).then(response => {
           if (response.data.code === 200) {
             this.$message({
@@ -424,12 +430,4 @@ export default {
 </script>
 
 <style>
-  .uploadImgBody :hover {
-    border: dashed 1px #00ccff;
-  }
-
-  img {
-    width: 100px;
-    height: 100px;
-  }
 </style>

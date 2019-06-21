@@ -14,10 +14,9 @@
                 class="avatar-uploader"
                 action="https://jsonplaceholder.typicode.com/posts/"
                 :show-file-list="false"
-                :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
               >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="">
+                <img v-if="user.avatar" :src="user.avatar" class="avatar" alt="">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
             </el-form-item>
@@ -109,9 +108,6 @@
 
 <script>
 import { getUserInfo, updatePass, resetEmail, updateEmail } from '@/api/user'
-// 创建axios的实例
-const axiosInstance = axios.create({})
-
 export default {
   name: 'Index',
   data() {
@@ -136,6 +132,7 @@ export default {
     }
     return {
       user: {
+        avatar: '',
         username: '',
         phone: 0,
         email: '',
@@ -144,7 +141,6 @@ export default {
         createTime: ''
       },
       activeName: 'first',
-      imageUrl: 'http://pic.52lhd.com/955136-20180802172143153-443159996.png',
       passForm: {
         oldPass: '',
         newPass: '',
@@ -320,28 +316,28 @@ export default {
       console.log(tab, event)
     },
 
-    handleAvatarSuccess(res, file) {
-      // this.imageUrl = URL.createObjectURL(file.raw)
-      const data = new FormData()
-      data.append('token', '')
-      data.append('file', file[0])
-      axiosInstance({
-        method: 'POST',
-        url: 'http://up.qiniu.com',
-        data: data
-      })
-        .then(function(res) {
-          // console.log('res',res)
-          const { base_url, path } = res.data
-          // 页面所用字段
-          self.previewAvatar = `${base_url}${path}?imageView2/1/w/154/h/154`
-          // 传给后台不完整
-          self.formData.avatar = `${path}`
-        })
-        .catch(function(err) {
-          console.log('err', err)
-        })
-    },
+    // handleAvatarSuccess(res, file) {
+    //   // this.imageUrl = URL.createObjectURL(file.raw)
+    //   const data = new FormData()
+    //   data.append('token', '')
+    //   data.append('file', file[0])
+    //   axiosInstance({
+    //     method: 'POST',
+    //     url: 'http://up.qiniu.com',
+    //     data: data
+    //   })
+    //     .then(function(res) {
+    //       // console.log('res',res)
+    //       const { base_url, path } = res.data
+    //       // 页面所用字段
+    //       self.previewAvatar = `${base_url}${path}?imageView2/1/w/154/h/154`
+    //       // 传给后台不完整
+    //       self.formData.avatar = `${path}`
+    //     })
+    //     .catch(function(err) {
+    //       console.log('err', err)
+    //     })
+    // },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2

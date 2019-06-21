@@ -15,13 +15,12 @@
       </el-button>
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加菜单</el-button>
 
-      <el-button
-        class="filter-item"
-        size="mini"
-        type="warning"
-        icon="el-icon-more"
-        @click="expand"
-      >{{ defaultExpandAll ? '折叠' : '展开' }}</el-button>
+      <el-tag>{{ defaultExpandAll ? '折叠' : '展开' }}</el-tag>
+      <el-switch
+        v-model="defaultExpandAll"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+      />
     </div>
 
     <!--表格树内容栏-->
@@ -386,10 +385,6 @@ export default {
           }
         })
       }
-    },
-    expand() {
-      this.$parent.expand = !this.$parent.expand
-      this.defaultExpandAll = this.$parent.expand
     }
   }
 }

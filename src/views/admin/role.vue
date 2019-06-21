@@ -9,6 +9,7 @@
         style="width: 200px;"
         size="small"
         placeholder="请输入角色名称"
+        @keyup.enter.native="handleFind"
       />
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFind">查找
       </el-button>
@@ -198,7 +199,9 @@ export default {
     // 获取角色
     roleList: function() {
       this.loading = true
-      getRoleList().then(response => {
+      const params = new URLSearchParams()
+      params.append('roleName', this.keyword)
+      getRoleList(params).then(response => {
         this.tableData = response.data.data
         this.loading = false
       })

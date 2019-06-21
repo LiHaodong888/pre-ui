@@ -30,3 +30,10 @@ export function getUserInfo() {
   })
 }
 
+export function getCaptcha() {
+  return request({
+    url: '/captcha.jpg?t=' + new Date().getTime(),
+    method: 'get'
+  })
+}
+

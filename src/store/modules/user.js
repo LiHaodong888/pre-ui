@@ -23,9 +23,6 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_INTRODUCTION: (state, introduction) => {
-      state.introduction = introduction
-    },
     SET_SETTING: (state, setting) => {
       state.setting = setting
     },
@@ -78,8 +75,6 @@ const user = {
           commit('SET_NAME', data.name)
           // 头像
           commit('SET_AVATAR', data.avatar)
-          // 简介
-          commit('SET_INTRODUCTION', data.introduction)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -130,7 +125,6 @@ const user = {
           commit('SET_ROLES', data.roles)
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
           dispatch('GenerateRoutes', data) // 动态修改权限后 重绘侧边菜单
           resolve()
         })

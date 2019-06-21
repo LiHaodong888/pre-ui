@@ -8,7 +8,8 @@
         class="filter-item"
         size="small"
         style="width: 200px;"
-        placeholder="请输入管理员名"
+        placeholder="请输入操作人名称"
+        @keyup.enter.native="handleFind"
       />
       <el-button class="filter-item" type="primary" icon="el-icon-search" size="mini" @click="handleFind">查找</el-button>
     </div>
@@ -30,10 +31,10 @@
 
       <el-table-column label="类型" width="80" align="center">
         <template slot-scope="scope">
-          <template v-if="scope.row.type == 1">
+          <template v-if="scope.row.type === 1">
             <span>正常</span>
           </template>
-          <template v-if="scope.row.type == 2">
+          <template v-if="scope.row.type === 2">
             <span>异常</span>
           </template>
         </template>
@@ -70,7 +71,7 @@
       </el-table-column>
       <el-table-column label="创建时间" width="160" align="center" sortable>
         <template slot-scope="scope">
-          <span>{{ scope.row.startTime }}</span>
+          <span>{{ parseTime(scope.row.startTime) }}</span>
         </template>
       </el-table-column>
 
@@ -107,6 +108,7 @@
 <script>
 import { getLogList, deleteLog } from '@/api/log'
 import { formatData } from '@/utils/webUtils'
+import { parseTime } from '@/utils/index'
 
 export default {
 
@@ -134,12 +136,14 @@ export default {
     this.logList()
   },
   methods: {
+    parseTime,
     logList: function() {
       this.loading = true
       const params = new URLSearchParams()
       params.append('page', this.currentPage)
       params.append('pageSize', this.pageSize)
       params.append('type', 2)
+      params.append('userName', this.keyword)
       getLogList(params).then(response => {
         this.loading = false
         this.tableData = response.data.data.logList
@@ -170,7 +174,7 @@ export default {
       })
         .then(() => {
           deleteLog(row.id).then(response => {
-            if (response.data.code == 200) {
+            if (response.data.code === 200) {
               this.$message({
                 type: 'success',
                 message: '操作成功'
@@ -207,53 +211,18 @@ export default {
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
-    margin: 0, 0, 0, 10px;
+    margin: 0, 0, 0, 10;
     cursor: pointer;
     position: relative;
     overflow: hidden;
   }
 
-  .avatar-uploader .el-upload:hover {
+  .avatar-uploader {
     border-color: #409eff;
-  }
-
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
-    text-align: center;
-  }
-
-  .imgBody {
-    width: 100px;
-    height: 100px;
-    border: solid 2px #ffffff;
-    float: left;
-    position: relative;
-  }
-
-  .uploadImgBody {
-    margin-left: 5px;
-    width: 100px;
-    height: 100px;
-    border: dashed 1px #c0c0c0;
-    float: left;
-    position: relative;
   }
 
   .uploadImgBody :hover {
     border: dashed 1px #00ccff;
-  }
-
-  .inputClass {
-    position: absolute;
-  }
-
-  .img {
-    width: 100%;
-    height: 100%;
   }
 
   img {

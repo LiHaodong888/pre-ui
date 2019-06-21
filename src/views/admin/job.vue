@@ -3,12 +3,13 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container" style="margin: 10px 0 10px 0;">
       <el-input
-        v-model="jobName"
+        v-model="keyword"
         clearable
         class="filter-item"
         style="width: 200px;"
         size="small"
         placeholder="请输入岗位名称"
+        @keyup.enter.native="handleFind"
       />
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFind">查找
       </el-button>
@@ -115,7 +116,7 @@ export default {
   data() {
     return {
       tableData: [],
-      jobName: '',
+      keyword: '',
       title: '',
       dialogFormVisible: false, // 控制弹出框
       formLabelWidth: '120px',
@@ -155,7 +156,7 @@ export default {
       const params = new URLSearchParams()
       params.append('page', this.currentPage)
       params.append('pageSize', this.pageSize)
-      params.append('jobName', this.jobName)
+      params.append('jobName', this.keyword)
       getJobList(params).then(response => {
         this.loading = false
         this.tableData = response.data.data.jobList

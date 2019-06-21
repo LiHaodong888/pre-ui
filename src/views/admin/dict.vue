@@ -163,7 +163,7 @@
 
 <script>
 import { saveDict, getDict, updateDict, deleteDict, getDictDetail, deleteDictByName } from '@/api/dict'
-import { deepClone } from '@/utils/index'
+import { deepClone, parseTime } from '@/utils/index'
 
 export default {
   data() {

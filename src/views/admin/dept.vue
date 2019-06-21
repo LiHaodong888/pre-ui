@@ -2,17 +2,13 @@
   <div class="app-container">
     <!-- 查询和其他操作 -->
     <div class="filter-container" style="margin: 10px 0 10px 0;">
-      <el-input v-model="keyword" clearable class="filter-item" style="width: 200px;" placeholder="请输入部门名称" />
-      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">查找
-      </el-button>
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加部门</el-button>
-      <el-button
-        class="filter-item"
-        size="mini"
-        type="warning"
-        icon="el-icon-more"
-        @click="expand"
-      >{{ defaultExpandAll ? '折叠' : '展开' }}</el-button>
+      <el-tag>{{ defaultExpandAll ? '折叠' : '展开' }}</el-tag>
+      <el-switch
+        v-model="defaultExpandAll"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+      />
     </div>
     <!--表格树内容栏-->
     <tree-table :key="key" :default-expand-all="defaultExpandAll" :data="tableTreeData" :columns="columns" size="small">
@@ -78,7 +74,6 @@ export default {
   data() {
     return {
       size: 'small',
-      keyword: '',
       tableData: [],
       title: '增加分类',
       dialogFormVisible: false, // 控制弹出框
@@ -268,10 +263,6 @@ export default {
           }
         })
       }
-    },
-    expand() {
-      this.$parent.expand = !this.$parent.expand
-      this.defaultExpandAll = this.$parent.expand
     }
   }
 }
