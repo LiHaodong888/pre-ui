@@ -15,22 +15,23 @@
         label-position="left"
       >
         <div class="title-container">
-          <lang-select style="float: right" class="set-language" />
+          <!--<lang-select style="float: right" class="set-language" />-->
           <h3 class="title">
             {{ $t('login.title') }}
           </h3>
         </div>
         <!--<el-card class="box-card">-->
         <el-form-item prop="username">
-          <!--<span class="svg-container">-->
-          <!--<svg-icon icon-class="user" />-->
-          <!--</span>-->
           <el-input
             v-model="loginForm.username"
             :placeholder="$t('login.username')"
             name="username"
             type="text"
-          />
+          >
+            <i slot="prefix" class="">
+              <svg-icon icon-class="user1" />
+            </i>
+          </el-input>
         </el-form-item>
 
         <el-form-item prop="password">
@@ -42,10 +43,10 @@
             :placeholder="$t('login.password')"
             name="password"
             type="password"
-            @keyup.enter.native="handleLogin"
           >
-            <i slot="prefix" class="el-input__icon el-icon-search" />
-
+            <i slot="prefix" class="">
+              <svg-icon icon-class="密码" />
+            </i>
           </el-input>
           <!--<span class="show-pwd" @click="showPwd">-->
           <!--<svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @keyup.enter.native="handleLogin"/>-->
@@ -60,6 +61,7 @@
                 auto-complete="off"
                 placeholder="验证码, 单击图片刷新"
                 style="width: 100%;"
+                @keyup.enter.native="handleLogin"
               />
             </el-form-item>
           </el-col>
@@ -86,12 +88,12 @@
 </template>
 
 <script>
-import LangSelect from '@/components/LangSelect'
+// import LangSelect from '@/components/LangSelect'
 import { formatData } from '@/utils/webUtils'
 
 export default {
   name: 'Login',
-  components: { LangSelect },
+  // components: { LangSelect },
   data() {
     // const validateUsername = (rule, value, callback) => {
     //   if (!validUsername(value)) {
@@ -116,7 +118,7 @@ export default {
 
       },
       loginRules: {
-        // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, trigger: 'blur' }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
