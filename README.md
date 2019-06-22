@@ -8,7 +8,7 @@ pre 前端源码
 
 |     |   后端源码  |   前端源码  |
 |---  |--- | --- |
-|  github   |  https://github.com/LiHaodong888/pre   |  https://github.com/elunez/eladmin-qd   |
+|  github   |  https://github.com/LiHaodong888/pre   |  https://github.com/LiHaodong888/pre-ui   |
 |  码云   |  https://gitee.com/li_haodong/pre   |  https://gitee.com/li_haodong/pre-ui   |
 
 
