@@ -4,7 +4,7 @@ import request from '@/utils/request'
  * 字典管理模块
  */
 
-// 保存
+// 保存字典
 export const saveDict = (data) => {
   return request({
     url: '/dict',

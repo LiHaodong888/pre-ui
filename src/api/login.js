@@ -26,14 +26,6 @@ export function getUserInfo() {
   return request({
     url: '/info',
     method: 'get'
-    // params: { token }
-  })
-}
-
-export function getCaptcha() {
-  return request({
-    url: '/captcha.jpg?t=' + new Date().getTime(),
-    method: 'get'
   })
 }
 

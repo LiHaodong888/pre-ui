@@ -8,6 +8,7 @@ export function getRoleList(parms) {
   })
 }
 
+// 根据主键删除角色
 export function deleteRole(id) {
   return request({
     url: '/role/' + id,
@@ -15,6 +16,7 @@ export function deleteRole(id) {
   })
 }
 
+// 添加角色
 export function addRole(data) {
   return request({
     url: '/role',

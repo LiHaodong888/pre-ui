@@ -27,12 +27,14 @@ export const getMenuTree = () => {
   })
 }
 
+// 获取路由
 export const getRouters = () => {
   return request({
     url: '/menu/getRouters',
     method: 'get'
   })
 }
+// 获取菜单列表
 export const getMenus = () => {
   return request({
     url: '/menu/getMenus',
@@ -40,7 +42,7 @@ export const getMenus = () => {
   })
 }
 
-//
+// 更新菜单
 export function updateMenu(data) {
   return request({
     url: '/menu',
