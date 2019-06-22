@@ -137,7 +137,7 @@ export default {
       params.append('userName', this.keyword)
       getLogList(params).then(response => {
         this.loading = false
-        this.tableData = response.data.data.logList
+        this.tableData = response.data.data.records
         this.total = response.data.data.total
       })
     },

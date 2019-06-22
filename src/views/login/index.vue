@@ -15,12 +15,10 @@
         label-position="left"
       >
         <div class="title-container">
-          <!--<lang-select style="float: right" class="set-language" />-->
           <h3 class="title">
             {{ $t('login.title') }}
           </h3>
         </div>
-        <!--<el-card class="box-card">-->
         <el-form-item prop="username">
           <el-input
             v-model="loginForm.username"
@@ -35,9 +33,6 @@
         </el-form-item>
 
         <el-form-item prop="password">
-          <!--<span class="svg-container">-->
-          <!--<svg-icon icon-class="password" />-->
-          <!--</span>-->
           <el-input
             v-model="loginForm.password"
             :placeholder="$t('login.password')"
@@ -48,9 +43,6 @@
               <svg-icon icon-class="密码" />
             </i>
           </el-input>
-          <!--<span class="show-pwd" @click="showPwd">-->
-          <!--<svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" @keyup.enter.native="handleLogin"/>-->
-          <!--</span>-->
         </el-form-item>
         <el-form-item>
           <el-col :span="12">
@@ -81,27 +73,17 @@
         >
           {{ $t('login.logIn') }}
         </el-button>
-        <!--</el-card>-->
       </el-form>
     </div>
   </div>
 </template>
 
 <script>
-// import LangSelect from '@/components/LangSelect'
 import { formatData } from '@/utils/webUtils'
 
 export default {
   name: 'Login',
-  // components: { LangSelect },
   data() {
-    // const validateUsername = (rule, value, callback) => {
-    //   if (!validUsername(value)) {
-    //     callback(new Error('Please enter the correct user name'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 2) {
         callback(new Error('The password can not be less than 6 digits'))
@@ -112,7 +94,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: 'admin',
+        password: '123456',
         captcha: '',
         src: ''
 
@@ -137,9 +119,6 @@ export default {
   },
   created() {
     this.refreshCaptcha()
-  },
-  destroyed() {
-    // window.removeEventListener('hashchange', this.afterQRScan)
   },
   methods: {
     showPwd() {

@@ -60,13 +60,13 @@ export const constantRoutes = [
   {
     path: '',
     component: Layout,
-    redirect: 'dashboard',
+    redirect: 'index',
     children: [
       {
-        path: 'dashboard',
+        path: 'index',
         component: () => import('@/views/index/index'),
         name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true, affix: true }
+        meta: { title: '主页', icon: 'dashboard', noCache: true, affix: true }
       }
     ]
   },
@@ -87,7 +87,7 @@ export const constantRoutes = [
 ]
 
 export default new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // 去掉url中的#
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
@@ -193,7 +193,7 @@ export const asyncRoutes = [
     component: Layout,
     children: [
       {
-        path: 'https://github.com/PanJiaChen/vue-element-admin',
+        path: 'https://gitee.com/li_haodong/pre',
         name: 'External Link',
         meta: { title: 'External Link', icon: 'link' }
       }

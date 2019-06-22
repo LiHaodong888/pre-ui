@@ -146,7 +146,7 @@ export default {
       params.append('userName', this.keyword)
       getLogList(params).then(response => {
         this.loading = false
-        this.tableData = response.data.data.logList
+        this.tableData = response.data.data.records
         this.total = response.data.data.total
       })
     },
@@ -215,10 +215,6 @@ export default {
     cursor: pointer;
     position: relative;
     overflow: hidden;
-  }
-
-  .avatar-uploader {
-    border-color: #409eff;
   }
 
   .uploadImgBody :hover {
