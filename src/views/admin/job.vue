@@ -159,7 +159,7 @@ export default {
       params.append('jobName', this.keyword)
       getJobList(params).then(response => {
         this.loading = false
-        this.tableData = response.data.data.jobList
+        this.tableData = response.data.data.records
         this.total = response.data.data.total
       })
     },
@@ -171,7 +171,6 @@ export default {
     },
     // 部门菜单树选中
     deptTreeCurrentChangeHandle(data) {
-      console.log(data)
       this.form.deptId = data.deptId
       this.form.deptName = data.name
     },

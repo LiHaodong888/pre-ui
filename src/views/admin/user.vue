@@ -275,7 +275,6 @@ export default {
         this.loading = false
         this.tableData = response.data.data.records
         this.total = response.data.data.total
-        console.log(response.data.data.records)
       })
     },
     handleFind: function() {
