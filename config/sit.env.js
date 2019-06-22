@@ -1,5 +1,5 @@
 module.exports = {
   NODE_ENV: '"production"',
   ENV_CONFIG: '"sit"',
-  BASE_API: '"https://pre"'
+  BASE_API: '"/pre"'
 }
