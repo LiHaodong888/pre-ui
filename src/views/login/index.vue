@@ -146,7 +146,7 @@ export default {
       })
     },
     refreshCaptcha: function() {
-      this.loginForm.src = 'https://api.52lhd.com/captcha.jpg?t=' + new Date().getTime()
+      this.loginForm.src = 'http://localhost:8081/captcha.jpg?t=' + new Date().getTime()
     }
   }
 }
