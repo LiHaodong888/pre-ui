@@ -1,7 +1,6 @@
 import { asyncRoutes, constantRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/views/layout/Layout'
-import { deepClone, deepCopy } from '@/utils/index'
 
 const permission = {
   state: {
@@ -15,9 +14,10 @@ const permission = {
     }
   },
   actions: {
-
+    // 生成路由
     GenerateRoutes({ commit }) {
       return new Promise(resolve => {
+        // 向后端请求路由数据
         getRouters().then(res => {
           const accessedRoutes = filterAsyncRouter(res.data.data)
           commit('SET_ROUTES', accessedRoutes)

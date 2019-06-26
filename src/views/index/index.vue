@@ -2,7 +2,7 @@
   <div class="wel-contailer">
     <div class="banner-text">
       <div style="text-align: center;">
-        <img src="https://gitee.com/li_haodong/picture_management/raw/master/pic/pre_red.png" height="256" width="256" alt="pre系统logo">
+        <img src="https://gitee.com/li_haodong/picture_management/raw/master/pic/WechatIMG9.png" height="256" width="256" alt="pre系统logo">
       </div>
       <span>
         <a href="https://gitee.com/li_haodong/pre" target="_blank">
