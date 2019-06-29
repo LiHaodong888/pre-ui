@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-left">
-      <img src="/static/WechatIMG25.png" alt="" class="img">
+      <img src="https://gitee.com/li_haodong/picture_management/raw/master/pic/WechatIMG9.png" alt="" class="img">
       <p class="title">Pre 权限管理快速开发框架</p>
       <p>v 1.0</p>
     </div>
@@ -146,7 +146,7 @@ export default {
       })
     },
     refreshCaptcha: function() {
-      this.loginForm.src = 'https://api.52lhd.com/captcha.jpg?t=' + new Date().getTime()
+      this.loginForm.src = process.env.BASE_API + '/captcha.jpg?t=' + new Date().getTime()
     }
   }
 }
@@ -154,7 +154,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
   .login-container {
-    width:1000px;
+    width: 1000px;
     display: flex;
     border-radius: 5px;
     overflow: hidden;
@@ -163,29 +163,35 @@ export default {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     padding: 40px 0;
-    .login-left{
+
+    .login-left {
       width: 50%;
       /*background: #1F79D6;*/
       text-align: center;
       padding-top: 60px;
       border-right: 1px solid #00000055;
-      img{
+
+      img {
         width: 140px;
       }
     }
-    .login-right{
+
+    .login-right {
       width: 50%;
       padding: 35px;
+
       .title {
         margin: 0 auto 30px auto;
         text-align: center;
         color: #505458;
       }
+
       .remember {
         margin: 0 0 35px 0;
       }
+
       .el-form-item {
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 5px;

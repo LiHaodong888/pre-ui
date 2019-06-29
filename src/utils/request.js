@@ -5,12 +5,11 @@ import router from '@/router'
 import { getToken } from '@/utils/auth'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
-// axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-
 // 创建axios实例
 const service = axios.create({
+  // axios中请求配置有baseURL选项，表示请求URL公共部分
   baseURL: process.env.BASE_API,
+  // 超时
   timeout: 8000
 })
 // request拦截器
@@ -22,8 +21,7 @@ service.interceptors.request.use(
     return config
   },
   error => {
-    // Do something with request error
-    console.log(error) // for debug
+    console.log(error)
     Promise.reject(error)
   }
 )
