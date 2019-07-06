@@ -400,7 +400,7 @@ export default {
     },
     changeScope() {
       this.deptIds = []
-      if (this.form.dataScope === 4) {
+      if (this.form.dsType === 4) {
         this.findDeptTree()
       }
     }
