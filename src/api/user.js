@@ -17,6 +17,7 @@ export function getUserList(parms) {
     params: parms
   })
 }
+
 // 编辑用户
 export function editUser(data) {
   return request({
@@ -25,6 +26,7 @@ export function editUser(data) {
     data: data
   })
 }
+
 // 重置密码
 export function restPass(id) {
   return request({
@@ -32,6 +34,7 @@ export function restPass(id) {
     method: 'put'
   })
 }
+
 // 删除用户
 export function deleteUser(id) {
   return request({
@@ -56,6 +59,7 @@ export function updatePass(parms) {
     params: parms
   })
 }
+
 // 修改邮箱
 export function updateEmail(parms) {
   return request({
@@ -73,3 +77,29 @@ export function resetEmail(parms) {
     params: parms
   })
 }
+
+// 发送短信验证码
+export function sendSms(phone) {
+  return request({
+    url: '/sendCode/' + phone,
+    method: 'post'
+  })
+}
+
+// 绑定用户
+export function bindUser(data) {
+  return request({
+    url: '/bind',
+    method: 'post',
+    data: data
+  })
+}
+// 绑定用户
+export function registerUser(data) {
+  return request({
+    url: '/register',
+    method: 'post',
+    data: data
+  })
+}
+

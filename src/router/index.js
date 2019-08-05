@@ -19,8 +19,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/register',
+    component: () => import('@/views/login/register'),
+    hidden: true
+  },
+  {
     path: '/login',
     component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/bind',
+    component: () => import('@/views/login/bind'),
     hidden: true
   },
   {

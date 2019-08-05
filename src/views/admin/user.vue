@@ -110,17 +110,17 @@
 
         <!-- 添加或修改对话框 -->
         <el-dialog :title="operation?'新增用户':'编辑用户'" :visible.sync="dialogFormVisible" center>
-          <el-form :model="dataForm" label-width="80px" size="small" label-position="right">
+          <el-form :model="dataForm" :rules="rules2" label-width="80px" size="small" label-position="right">
 
-            <el-form-item label="用户名" :label-width="formLabelWidth" required>
+            <el-form-item label="用户名" :label-width="formLabelWidth" prop="username" required>
               <el-input v-model="dataForm.username" auto-complete="off" placeholder="请输入用户名" />
             </el-form-item>
 
-            <el-form-item label="邮箱" :label-width="formLabelWidth">
+            <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
               <el-input v-model="dataForm.email" auto-complete="off" placeholder="请输入邮箱" />
             </el-form-item>
 
-            <el-form-item label="手机" :label-width="formLabelWidth">
+            <el-form-item label="手机" :label-width="formLabelWidth" prop="phone">
               <el-input v-model="dataForm.phone" auto-complete="off" placeholder="请输入手机" />
             </el-form-item>
 
@@ -179,7 +179,7 @@
 </template>
 
 <script>
-import { addUser, getUserList, editUser, deleteUser, restPass } from '@/api/user'
+import { addUser, getUserList, editUser, deleteUser, restPass, registerUser } from '@/api/user'
 import { getJobListByDeptId } from '@/api/job'
 import { getRoleList } from '@/api/roles'
 import { getDept } from '@/api/dept'
@@ -193,6 +193,16 @@ export default {
   },
   mixins: [initDict],
   data() {
+    // 验证手机号是否合法
+    const checkTel = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入手机号码'))
+      } else if (!this.checkMobile(value)) {
+        callback(new Error('手机号码不合法'))
+      } else {
+        callback()
+      }
+    }
     return {
       // 用户列表
       tableData: [],
@@ -225,7 +235,13 @@ export default {
       value5: '100',
       filterText: '',
       loading: false,
-      jobName: ''
+      jobName: '',
+      rules2: {
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }, { pattern: /^[a-zA-Z0-9_]{4,8}$/, message: '以字母开头，长度在4-8之间， 只能包含字符、数字和下划线' }],
+        phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }, { validator: checkTel, trigger: 'change' }],
+        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, { pattern: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, message: '输入邮箱不合法'
+        }]
+      }
 
     }
   },
@@ -388,6 +404,9 @@ export default {
         userRoles.push(this.dataForm.roleList[i])
       }
       this.dataForm.roleList = userRoles
+
+      console.log(this.dataForm)
+      debugger
       if (!this.operation) {
         // 编辑用户
         editUser(this.dataForm).then(response => {
@@ -423,6 +442,11 @@ export default {
           }
         })
       }
+    },
+    // 验证手机号
+    checkMobile(str) {
+      const reg = /^1[3456789]\d{9}$/
+      return reg.test(str)
     }
   }
 }

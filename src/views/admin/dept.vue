@@ -12,7 +12,6 @@
     </div>
     <!--表格树内容栏-->
     <tree-table :key="key" :default-expand-all="defaultExpandAll" :data="tableTreeData" :columns="columns" size="small">
-
       <template slot="createTime" slot-scope="{scope}">
         <span>{{ parseTime(scope.row.createTime) }}</span>
       </template>

@@ -208,10 +208,10 @@ export default {
 </script>
 
 <style>
-  .avatar-uploader .el-upload {
+  .avatar-uploader {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
-    margin: 0, 0, 0, 10;
+    margin: 0 0 0 10;
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -219,10 +219,5 @@ export default {
 
   .uploadImgBody :hover {
     border: dashed 1px #00ccff;
-  }
-
-  img {
-    width: 100px;
-    height: 100px;
   }
 </style>
