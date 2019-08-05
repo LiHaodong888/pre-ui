@@ -329,7 +329,7 @@ export default {
       this.loginForm.code = ''
       this.loginForm.t = new Date().getTime()
       // this.loginForm.src = process.env.BASE_API + '/captcha.jpg?t=' + this.loginForm.t
-      this.src = 'http://101.132.64.80:8081/captcha.jpg?t=' + this.loginForm.t
+      this.src = 'http://localhost:8081/captcha.jpg?t=' + this.loginForm.t
     },
     // 社交登录
     socialLogin() {
@@ -391,7 +391,7 @@ export default {
     },
     handleSocial(path) {
       this.socialLoading = true
-      window.location.href = 'http://101.132.64.80:8081/auth/' + path
+      window.location.href = 'http://localhost:8081/auth/' + path
     },
     gotoRegister() {
       this.$router.push({
