@@ -3,14 +3,17 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container" style="margin: 10px 0 10px 0;">
       <el-input
-        v-model="keyword"
+        v-model="query.value"
         clearable
         class="filter-item"
         style="width: 200px;"
         size="small"
-        placeholder="请输入岗位名称"
+        placeholder="请输入社交账号名称内容"
         @keyup.enter.native="handleFind"
       />
+      <el-select v-model="query.providerId" clearable placeholder="类型" class="filter-item" size="small" style="width: 130px">
+        <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+      </el-select>
       <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFind">查找</el-button>
     </div>
 
@@ -81,7 +84,6 @@ export default {
   data() {
     return {
       tableData: [],
-      keyword: '',
       title: '',
       dialogFormVisible: false, // 控制弹出框
       formLabelWidth: '120px',
@@ -100,7 +102,16 @@ export default {
       dataRule: {
         jobName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }]
       },
-      loading: false
+      loading: false,
+      queryTypeOptions: [
+        { key: 'gitee', display_name: 'gitee' },
+        { key: 'github', display_name: 'github' },
+        { key: 'qq', display_name: 'qq' }
+      ],
+      query: {
+        providerId: '',
+        value: ''
+      }
     }
   },
   created() {
@@ -111,10 +122,14 @@ export default {
     getSocialList: function() {
       this.loading = true
       const params = new URLSearchParams()
-      params.append('page', this.currentPage)
-      params.append('pageSize', this.pageSize)
+      params.append('current', this.currentPage)
+      params.append('size', this.pageSize)
+      if (this.query.providerId !== '') {
+        params.append('providerId', this.query.providerId)
+        params.append('displayName', this.query.value)
+      }
+
       getSocialList(params).then(response => {
-        console.log(response.data.data.records)
         this.loading = false
         this.tableData = response.data.data.records
         this.total = response.data.data.total
@@ -122,7 +137,7 @@ export default {
     },
     // 查找
     handleFind: function() {
-      this.getJobList()
+      this.getSocialList()
     },
     // 换页
     handleCurrentChange: function(val) {

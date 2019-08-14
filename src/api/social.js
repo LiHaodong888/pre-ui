@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 /**
- * 岗位信息模块
+ * 社交登录账户模块
  * @param parms
  */
 

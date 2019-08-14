@@ -1,15 +1,29 @@
 <template>
-  <div v-if="isShow" v-loading="socialLoading" class="login-container" element-loading-text="现在进行第三方登录,请稍等">
+  <div
+    v-if="isShow"
+    v-loading="socialLoading"
+    class="login-container"
+    :element-loading-text="'现在进行'+currentPath+'第三方登录,请稍等'"
+  >
     <div class="login-left">
       <img src="https://gitee.com/li_haodong/picture_management/raw/master/pic/WechatIMG9.png" alt="" class="img">
       <p class="title">Pre 权限管理快速开发框架</p>
-      <p>v 1.1</p>
+      <p>v 1.2</p>
     </div>
     <div class="login-right">
       <div class="title-container">
         <h3 class="title">
           {{ $t('login.title') }}
         </h3>
+        <el-select
+          v-model="active"
+          placeholder="点击请选择租户"
+          size="mini"
+          class="login-select"
+          @change="handleTenant"
+        >
+          <el-option v-for="tenant in tenantList" :key="tenant.id" :label="tenant.name" :value="tenant.id" />
+        </el-select>
       </div>
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane name="loginForm">
@@ -154,7 +168,7 @@
             </svg>
           </span>
 
-          <span class="other-icon">
+          <span class="other-icon" @click="handleSocial('qq')">
             <svg aria-hidden="true" width="14" height="16" viewBox="0 0 448 512" focusable="false" class="fa-icon">
               <path
                 d="M433.8 420.4c-11.5 1.4-44.9-52.7-44.9-52.7 0 31.3-16.1 72.2-51.1 101.8 16.8 5.2 54.8 19.2 45.8 34.4-7.3 12.3-125.5 7.9-159.6 4-34.1 3.8-152.3 8.3-159.6-4-9-15.3 28.9-29.2 45.8-34.4-34.9-29.5-51.1-70.4-51.1-101.8 0 0-33.3 54.1-44.9 52.7-5.4-0.7-12.4-29.6 9.3-99.7 10.3-33 22-60.5 40.1-105.8-3.1-116.9 45.2-215 160.3-215 113.7 0 163.2 96.1 160.3 215 18.1 45.2 29.9 72.9 40.1 105.8 21.8 70.1 14.7 99.1 9.3 99.7z"
@@ -198,6 +212,8 @@ import { formatData, getUrlKey } from '@/utils/webUtils'
 import { isvalidPhone } from '@/utils/validate'
 import { github } from '@/api/login'
 import { sendSms } from '@/api/user'
+import { setTenant } from '@/utils/tenant'
+import { getTenantList } from '@/api/tenant'
 
 export default {
   name: 'Login',
@@ -228,6 +244,7 @@ export default {
       }
     }
     return {
+      tenantList: [],
       loginForm: {
         username: 'admin',
         password: '123456',
@@ -260,7 +277,9 @@ export default {
       isDisabled: false,
       codeLoading: false,
       time: 60,
-      socialLoading: false
+      socialLoading: false,
+      currentPath: '',
+      active: ''
     }
   },
   // watch: {
@@ -273,6 +292,7 @@ export default {
   //   }
   // },
   created() {
+    this.getTenantList()
     this.refreshCaptcha()
     this.socialLogin()
   },
@@ -390,12 +410,21 @@ export default {
       this.$refs[tab.paneName].resetFields()
     },
     handleSocial(path) {
+      this.currentPath = path
       this.socialLoading = true
       window.location.href = 'http://localhost:8081/auth/' + path
     },
     gotoRegister() {
       this.$router.push({
         path: '/register'
+      })
+    },
+    handleTenant(tenantId) {
+      setTenant(tenantId)
+    },
+    getTenantList() {
+      getTenantList().then(res => {
+        this.tenantList = res.data.data
       })
     }
   }
@@ -477,6 +506,19 @@ export default {
         cursor: pointer;
         width: calc(100% - 160px);
         text-align: right;
+      }
+
+      .login-select {
+        margin-left: 100px;
+        margin-bottom: 13px;
+
+        input {
+          color: #333;
+          font-size: 14px;
+          font-weight: 400;
+          border: none;
+          text-align: center;
+        }
       }
     }
 
