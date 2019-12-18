@@ -21,12 +21,18 @@ export const getDict = (parms) => {
   })
 }
 
-// 获取字典列表
-export const getDictDetail = (parms) => {
+// 根据字典id获取字典详情列表
+export const queryDictItemList = (parms) => {
   return request({
-    url: '/dict/getDictDetailList',
+    url: '/dictItem',
     method: 'get',
     params: parms
+  })
+}
+export const queryDictItemByDictName = (dictName) => {
+  return request({
+    url: '/dict/queryDictItemByDictName/' + dictName,
+    method: 'get'
   })
 }
 
@@ -46,12 +52,19 @@ export const deleteDict = (id) => {
   })
 }
 
-// 根据名称删除字典
-export const deleteDictByName = (name) => {
+// 保存字典详情
+export const addDictItem = (data) => {
   return request({
-    url: '/dict/delete/',
-    method: 'delete',
-    params: { name: name }
-  }
-  )
+    url: '/dictItem',
+    method: 'post',
+    data: data
+  })
+}
+// 更新字典详情
+export const updateDictItem = (data) => {
+  return request({
+    url: '/dictItem',
+    method: 'put',
+    data: data
+  })
 }

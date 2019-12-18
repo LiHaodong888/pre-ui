@@ -2,7 +2,7 @@
   <div class="components-container">
     <code>This is based on
       <a class="link-type" href="//github.com/dai-siki/vue-image-crop-upload"> vue-image-crop-upload</a>.
-      {{ $t('components.imageUploadTips') }}
+      由于我在使用时它只有vue@1版本，而且和mockjs不兼容，所以自己改造了一下，如果大家要使用的话，优先还是使用官方版本。
     </code>
 
     <pan-thumb :image="image" />

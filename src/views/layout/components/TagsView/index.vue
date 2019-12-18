@@ -12,24 +12,23 @@
         @click.middle.native="closeSelectedTag(tag)"
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
-        {{ generateTitle(tag.title) }}
+        {{ tag.title }}
         <span v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)">{{ $t('tagsView.refresh') }}</li>
+      <li @click="refreshSelectedTag(selectedTag)">刷新</li>
       <li v-if="!(selectedTag.meta&&selectedTag.meta.affix)" @click="closeSelectedTag(selectedTag)">
-        {{ $t('tagsView.close') }}
+        关闭
       </li>
-      <li @click="closeOthersTags">{{ $t('tagsView.closeOthers') }}</li>
-      <li @click="closeAllTags(selectedTag)">{{ $t('tagsView.closeAll') }}</li>
+      <li @click="closeOthersTags">关闭其它</li>
+      <li @click="closeAllTags(selectedTag)">关闭所有</li>
     </ul>
   </div>
 </template>
 
 <script>
 import ScrollPane from './ScrollPane'
-import { generateTitle } from '@/utils/i18n'
 import path from 'path'
 
 export default {
@@ -69,7 +68,6 @@ export default {
     this.addTags()
   },
   methods: {
-    generateTitle, // generateTitle by vue-i18n
     isActive(route) {
       return route.path === this.$route.path
     },
@@ -189,96 +187,109 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
-.tags-view-container {
-  height: 34px;
-  width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
-  .tags-view-wrapper {
-    .tags-view-item {
-      display: inline-block;
-      position: relative;
-      cursor: pointer;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
-      color: #495060;
+<style lang="scss" scoped>
+  .tags-view-container {
+    height: 35px;
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #f1f1f1;
+    .tags-view-wrapper {
+      .tags-view-item {
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+        height: 34px;
+        line-height: 34px;
+        border-left: 1px solid #f1f1f1;
+        color: #999;
+        background: #fff;
+        padding: 0 5px 0 20px;
+        font-size: 13px;
+        transition: all .3s;
+        .el-icon-none {
+          width: 16px
+        }
+        &:hover {
+          color: #495060;
+          & .el-icon-close {
+            font-size: 1rem;
+            font-weight: bold;
+            color: red;
+          }
+        }
+        &:first-of-type {
+        }
+        &:last-of-type {
+          border-right: 1px solid #f1f1f1;
+        }
+        &.active {
+          /*background-color: #42b983;*/
+          /*color: #fff;*/
+          /*border-color: #42b983;*/
+          &::before {
+            content: '';
+            background: #85ef47!important;
+            box-shadow: 0 0 7px #b7eb8f;
+            display: inline-block;
+            bottom: 3px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            position: relative;
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+    .contextmenu {
+      margin: 0;
       background: #fff;
-      padding: 0 8px;
-      font-size: 12px;
-      margin-left: 5px;
-      margin-top: 4px;
-      &:first-of-type {
-        margin-left: 15px;
-      }
-      &:last-of-type {
-        margin-right: 15px;
-      }
-      &.active {
-        background-color: #42b983;
-        color: #fff;
-        border-color: #42b983;
-        &::before {
-          content: '';
-          background: #fff;
-          display: inline-block;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          position: relative;
-          margin-right: 2px;
+      z-index: 3000;
+      position: absolute;
+      list-style-type: none;
+      padding: 5px 0;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 400;
+      color: #333;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+      li {
+        margin: 0;
+        padding: 7px 20px;
+        cursor: pointer;
+        &:hover {
+          background-color: #e8f4ff;
+          color: #46a6ff;
         }
       }
     }
   }
-  .contextmenu {
-    margin: 0;
-    background: #fff;
-    z-index: 100;
-    position: absolute;
-    list-style-type: none;
-    padding: 5px 0;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 400;
-    color: #333;
-    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
-    li {
-      margin: 0;
-      padding: 7px 16px;
-      cursor: pointer;
-      &:hover {
-        background: #eee;
-      }
-    }
-  }
-}
 </style>
 
-<style rel="stylesheet/scss" lang="scss">
-//reset element css of el-icon-close
-.tags-view-wrapper {
-  .tags-view-item {
-    .el-icon-close {
-      width: 16px;
-      height: 16px;
-      vertical-align: 2px;
-      border-radius: 50%;
-      text-align: center;
-      transition: all .3s cubic-bezier(.645, .045, .355, 1);
-      transform-origin: 100% 50%;
-      &:before {
-        transform: scale(.6);
-        display: inline-block;
-        vertical-align: -3px;
-      }
-      &:hover {
-        background-color: #b4bccc;
+<style lang="scss">
+  //reset element css of el-icon-close
+  .tags-view-wrapper {
+    .tags-view-item {
+      .el-icon-close {
         color: #fff;
+        width: 16px;
+        height: 16px;
+        vertical-align: 2px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 50%;
+        text-align: center;
+        transform-origin: 100% 50%;
+        &:before {
+          transform: scale(.6);
+          display: inline-block;
+          vertical-align: -3px;
+        }
+        &:hover {
+          /*background-color: #b4bccc;*/
+          /*color: #fff;*/
+        }
       }
     }
   }
-}
 </style>

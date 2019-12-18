@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 查询和其他操作 -->
-    <el-table v-loading="loading" :data="tableData" style="width: 100%" size="mini">
+    <el-table v-loading="loading" :data="tableData" border style="width: 100%">
       <el-table-column type="selection" />
 
       <el-table-column label="序号" width="60" align="center">
@@ -36,15 +36,15 @@
 
       <el-table-column label="操作" header-align="center" fixed="right" min-width="150" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-view" @click="handleView(scope.row)">表详情</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-check" @click="handleCodeGen(scope.row)">代码生成</el-button>
+          <el-button type="primary" size="small" icon="el-icon-view" @click="handleView(scope.row)">表详情</el-button>
+          <el-button type="danger" size="small" icon="el-icon-check" @click="handleCodeGen(scope.row)">代码生成</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!--表详情dialog-->
     <el-dialog :append-to-body="true" :visible.sync="tableDialog" title="表详情" width="800px" max-height="800px">
-      <el-table v-loading="loading" :data="dictDetailData" size="small" style="width: 100%;">
+      <el-table v-loading="loading" :data="dictDetailData" border style="width: 100%;">
         <el-table-column prop="columnName" label="字段名" />
         <el-table-column prop="dataType" label="数据类型" />
         <el-table-column prop="columnComment" label="备注" />
@@ -159,21 +159,22 @@ export default {
     }
   },
   created() {
-    this.logList()
+    this.dataList()
   },
   methods: {
-    logList: function() {
+    dataList: function() {
       this.loading = true
       const params = new URLSearchParams()
       params.append('tableSchema', 'pre')
       getTableList(params).then(response => {
+        console.log(response.data.data)
         this.loading = false
         this.tableData = response.data.data
       })
     },
     // 搜索
     handleFind: function() {
-      this.logList()
+      this.dataList()
     },
 
     // 查看

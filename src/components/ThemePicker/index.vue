@@ -144,14 +144,18 @@ export default {
 </script>
 
 <style>
-.theme-picker .el-color-picker__trigger {
-  margin-top: 12px;
-  height: 26px!important;
-  width: 26px!important;
-  padding: 2px;
-}
+  .theme-message, .theme-picker-dropdown {
+    z-index: 99999 !important;
+  }
 
-.theme-picker-dropdown .el-color-dropdown__link-btn {
-  display: none;
-}
+  .theme-picker .el-color-picker__trigger {
+    margin-top: 12px;
+    height: 26px !important;
+    width: 26px !important;
+    padding: 2px;
+  }
+
+  .theme-picker-dropdown .el-color-dropdown__link-btn {
+    display: none;
+  }
 </style>

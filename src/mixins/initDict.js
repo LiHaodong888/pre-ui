@@ -1,4 +1,4 @@
-import { getDictDetail } from '@/api/dict'
+import { queryDictItemByDictName } from '@/api/dict'
 
 export default {
   data() {
@@ -7,11 +7,9 @@ export default {
     }
   },
   methods: {
-    async getDict(name) {
+    async getDict(dictName) {
       return new Promise((resolve, reject) => {
-        const params = new URLSearchParams()
-        params.append('name', name)
-        getDictDetail(params).then(res => {
+        queryDictItemByDictName(dictName).then(res => {
           console.log(res)
           this.dicts = res.data.data
           resolve(res)

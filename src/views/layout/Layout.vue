@@ -2,24 +2,34 @@
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" />
-    <div class="main-container">
-      <navbar />
-      <tags-view />
+    <div :class="{hasTagsView:needTagsView}" class="main-container">
+      <div :class="{'fixed-header':fixedHeader}">
+        <navbar />
+        <tags-view v-if="needTagsView" />
+      </div>
       <app-main />
+      <right-panel v-if="showSettings">
+        <settings />
+      </right-panel>
     </div>
+
   </div>
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, TagsView } from './components'
+import RightPanel from '@/components/RightPanel'
+import { Navbar, Sidebar, AppMain, TagsView, Settings } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Layout',
   components: {
-    Navbar,
-    Sidebar,
     AppMain,
+    Navbar,
+    RightPanel,
+    Settings,
+    Sidebar,
     TagsView
   },
   mixins: [ResizeMixin],
@@ -29,6 +39,15 @@ export default {
     },
     device() {
       return this.$store.state.app.device
+    },
+    showSettings() {
+      return this.$store.state.setting.showSettings
+    },
+    needTagsView() {
+      return this.$store.state.setting.tagsView
+    },
+    fixedHeader() {
+      return this.$store.state.setting.fixedHeader
     },
     classObj() {
       return {
@@ -49,12 +68,14 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "~@/styles/mixin.scss";
+  @import "~@/styles/variables.scss";
+
   .app-wrapper {
     @include clearfix;
     position: relative;
     height: 100%;
     width: 100%;
-    &.mobile.openSidebar{
+    &.mobile.openSidebar {
       position: fixed;
       top: 0;
     }
@@ -67,5 +88,19 @@ export default {
     height: 100%;
     position: absolute;
     z-index: 999;
+  }
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9;
+    width: calc(100% - #{$sideBarWidth});
+    transition: width 0.28s;
+  }
+  .hideSidebar .fixed-header {
+    width: calc(100% - 54px)
+  }
+  .mobile .fixed-header {
+    width: 100%;
   }
 </style>

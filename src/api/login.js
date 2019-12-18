@@ -1,12 +1,12 @@
 import request from '@/utils/request'
 
-export function loginByUsername(username, password, code, token, t) {
+export function loginByUsername(username, password, code, token, key) {
   const data = {
     username,
     password,
     code,
     token,
-    t
+    key
   }
   // 登录
   return request({
@@ -31,6 +31,13 @@ export function getUserInfo() {
   })
 }
 
+export function getImgCode() {
+  return request({
+    url: '/auth/captcha.jpg',
+    method: 'get'
+  })
+}
+
 // 根据手机
 export function loginByUserPhone(phone, smsCode) {
   const data = {
@@ -44,3 +51,4 @@ export function loginByUserPhone(phone, smsCode) {
     params: data
   })
 }
+

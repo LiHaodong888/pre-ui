@@ -52,7 +52,8 @@ service.interceptors.response.use(
       })
     } else if (code !== 200) {
       Notification.error({
-        title: response.data.msg
+        title: response.data.msg,
+        duration: 1000
       })
       return Promise.reject('error')
     } else {
@@ -107,7 +108,7 @@ service.interceptors.response.use(
       if (errorMsg !== undefined) {
         Notification.error({
           title: errorMsg,
-          duration: 2500
+          duration: 1000
         })
       }
     }

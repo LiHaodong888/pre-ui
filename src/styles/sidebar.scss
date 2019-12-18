@@ -38,6 +38,16 @@
       right: 0;
     }
 
+    .el-scrollbar {
+      height: 100%;
+    }
+
+    &.has-logo {
+      .el-scrollbar {
+        height: calc(100% - 50px);
+      }
+    }
+
     .is-horizontal {
       display: none;
     }
@@ -76,8 +86,13 @@
       background-color: $subMenuBg !important;
 
       &:hover {
-        background-color: $subMenuHover !important;
+        color: #fff  !important;
+        //background-color: $subMenuHover !important;
       }
+    }
+
+    & .nest-menu .is-active {
+       background-color:  #393e46 !important;
     }
   }
 
@@ -167,6 +182,12 @@
     }
   }
 }
+
+//#app > div > div.sidebar-container.el-scrollbar > div.scrollbar-wrapper.el-scrollbar__wrap.el-scrollbar__wrap--hidden-default > div > ul > div:nth-child(3) > li > ul > div:nth-child(3) > a > li .is-active
+//{
+//  background-color:  #2d8cf0 !important;
+//}
+
 
 // when menu collapsed
 .el-menu--vertical {

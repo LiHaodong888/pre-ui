@@ -6,10 +6,10 @@
           <el-input
             v-model="filterText"
             placeholder="输入部门名称搜索"
-            size="small"
             prefix-icon="el-icon-search"
             class="filter-item"
             style="margin-bottom: 20px"
+            size="small"
           />
         </div>
         <el-tree
@@ -24,7 +24,7 @@
         <!-- 查询和其他操作 -->
         <div class="filter-container">
           <el-input
-            v-model="keyword"
+            v-model="query.userName"
             clearable
             size="small"
             class="filter-item"
@@ -32,67 +32,62 @@
             placeholder="请输入用户名"
             @keyup.enter.native="handleFind"
           />
-          <el-button class="filter-item" type="primary" icon="el-icon-search" size="mini" @click="handleFind">查找
+          <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" @click="handleFind">搜索
           </el-button>
-          <el-button class="filter-item" type="primary" size="mini" icon="el-icon-plus" @click="handleAdd">添加
+          <el-button class="filter-item" type="primary" icon="el-icon-refresh" size="small" @click="handleReset">重置
+          </el-button>
+          <el-button class="filter-item" type="primary" size="small" icon="el-icon-plus" @click="handleAdd">添加
           </el-button>
         </div>
 
-        <el-table v-loading="loading" :data="tableData" style="width: 100%" size="mini">
+        <el-table v-loading="loading" :data="tableData" border style="width: 100%">
           <el-table-column label="序号" width="60" align="center">
             <template slot-scope="scope">
               <span>{{ scope.$index + 1 }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="用户名" width="80" align="center">
+          <el-table-column label="用户名" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.username }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="手机号" width="100" align="center" sortable>
+          <el-table-column label="手机号" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.phone }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="邮箱" width="160" align="center">
+          <el-table-column label="邮箱" width="180" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.email }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="部门 / 岗位" width="130" align="center">
+          <el-table-column label="部门" align="center">
             <template slot-scope="scope">
-              <div>{{ scope.row.deptName }} / {{ scope.row.jobName }}</div>
+              <div>{{ scope.row.deptName }}</div>
             </template>
           </el-table-column>
 
-          <el-table-column label="拥有角色" width="200" align="center">
+          <el-table-column label="状态" align="center">
             <template slot-scope="scope">
-              <el-tag v-for="item in scope.row.roleList" :key="item.roleId" type="success" style="margin-right: 5px;">
-                {{ item.roleName }}
-              </el-tag>
-            </template>
-          </el-table-column>
 
-          <el-table-column label="状态" width="70" align="center">
-            <template slot-scope="scope">
               <div v-for="item in dicts" :key="item.id">
-                <el-tag v-if="scope.row.lockFlag.toString() === item.value" :type="scope.row.lockFlag ? '' : 'info'">{{
-                  item.label }}
+                <el-tag v-if="scope.row.lockFlag.toString() == item.itemValue" :type="scope.row.lockFlag ? '' : 'info'">{{
+                  item.itemText }}
                 </el-tag>
               </div>
             </template>
-
           </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="120" align="center">
+          <el-table-column label="操作" fixed="right" min-width="150" align="center">
             <template slot-scope="scope">
               <!--<el-button @click="handRest(scope.row)" type="warning" size="small">重置密码</el-button>-->
-              <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button size="small" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="small" icon="el-icon-delete" type="danger" @click="handleDelete(scope.row)">删除
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -134,17 +129,6 @@
               />
             </el-form-item>
 
-            <el-form-item label="岗位" :label-width="formLabelWidth">
-              <el-select v-model="dataForm.jobId" placeholder="请先选择部门" style="width: 100%">
-                <el-option
-                  v-for="(item,index) in jobs"
-                  :key="''+ index"
-                  :label="item.jobName"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
-
             <el-form-item label="角色" prop="userRoles" label-width="120px">
               <el-select v-model="dataForm.roleList" multiple placeholder="请选择" style="width: 100%;">
                 <el-option
@@ -180,10 +164,8 @@
 
 <script>
 import { addUser, getUserList, editUser, deleteUser, restPass, registerUser } from '@/api/user'
-import { getJobListByDeptId } from '@/api/job'
 import { getRoleList } from '@/api/roles'
 import { getDept } from '@/api/dept'
-import { formatData } from '@/utils/webUtils'
 import PopupTreeInput from '@/components/PopupTreeInput'
 import initDict from '@/mixins/initDict'
 
@@ -209,19 +191,20 @@ export default {
       roles: [], // 角色列表
       jobs: [], // 岗位列表
       operation: false, // true:新增, false:编辑
-      keyword: '',
       currentPage: 1,
       pageSize: 10,
       total: 0, // 总数量
       deptId: 0,
       dialogFormVisible: false, // 控制弹出框
       formLabelWidth: '120px',
+      query: {
+        userName: ''
+      },
       dataForm: {
         username: '',
         avatar: '',
         deptId: 1,
         deptName: '',
-        jobId: 0,
         email: 'lihaodongmail@163.com',
         phone: '17521296869',
         lockFlag: '' + 0,
@@ -237,9 +220,13 @@ export default {
       loading: false,
       jobName: '',
       rules2: {
-        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }, { pattern: /^[a-zA-Z0-9_]{4,8}$/, message: '以字母开头，长度在4-8之间， 只能包含字符、数字和下划线' }],
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }, {
+          pattern: /^[a-zA-Z0-9_]{4,8}$/,
+          message: '以字母开头，长度在4-8之间， 只能包含字符、数字和下划线'
+        }],
         phone: [{ required: true, message: '请输入手机号', trigger: 'blur' }, { validator: checkTel, trigger: 'change' }],
-        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, { pattern: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, message: '输入邮箱不合法'
+        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }, {
+          pattern: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/, message: '输入邮箱不合法'
         }]
       }
 
@@ -250,7 +237,7 @@ export default {
     this.findUserRoles()
     this.findDeptTree()
     // 加载数据字典
-    this.getDict('user_status')
+    this.getDict('用户状态')
   },
   methods: {
     // 加载用户角色信息
@@ -271,13 +258,6 @@ export default {
     deptTreeCurrentChangeHandle(data) {
       this.dataForm.deptId = data.deptId
       this.dataForm.deptName = data.name
-      this.getJobs(data.deptId)
-    },
-    // 加载岗位列表
-    getJobs(id) {
-      getJobListByDeptId(id).then(res => {
-        this.jobs = res.data.data
-      })
     },
     // 加载用户列表
     adminList: function() {
@@ -286,7 +266,7 @@ export default {
       params.append('current', this.currentPage)
       params.append('size', this.pageSize)
       params.append('deptId', this.deptId)
-      params.append('username', this.keyword)
+      params.append('username', this.query.userName)
       getUserList(params).then(response => {
         this.loading = false
         this.tableData = response.data.data.records
@@ -294,6 +274,12 @@ export default {
       })
     },
     handleFind: function() {
+      this.adminList()
+    },
+    handleReset: function() {
+      this.query = {
+        userName: ''
+      }
       this.adminList()
     },
     // 添加

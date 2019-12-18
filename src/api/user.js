@@ -81,7 +81,7 @@ export function resetEmail(parms) {
 // 发送短信验证码
 export function sendSms(phone) {
   return request({
-    url: '/sendCode/' + phone,
+    url: '/auth/sendCode/' + phone,
     method: 'post'
   })
 }

@@ -11,25 +11,16 @@
         size="small"
         placeholder="请输入菜单"
       />
-      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFind">查找
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">查找
       </el-button>
-      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加菜单</el-button>
-
-      <el-tag>{{ defaultExpandAll ? '折叠' : '展开' }}</el-tag>
-      <el-switch
-        v-model="defaultExpandAll"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-      />
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加菜单</el-button>
     </div>
 
     <!--表格树内容栏-->
     <tree-table
       :key="key"
-      :default-expand-all="defaultExpandAll"
       :data="tableTreeData"
       :columns="columns"
-      size="small"
     >
       <template slot="icon" slot-scope="{scope}">
         <svg-icon :icon-class="scope.row.icon" />
@@ -40,8 +31,8 @@
         <el-tag v-else-if="scope.row.type === 2" size="small" type="info">按钮</el-tag>
       </template>
       <template slot="operation" slot-scope="{scope}">
-        <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-        <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+        <el-button size="small" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+        <el-button size="small" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
       </template>
     </tree-table>
 
@@ -196,7 +187,7 @@ export default {
           label: '名称',
           key: 'name',
           expand: true,
-          width: 170,
+          width: 220,
           align: 'center'
         },
         {
@@ -240,11 +231,10 @@ export default {
         {
           label: '操作',
           key: 'operation',
-          fixed: 'right'
+          fixed: 'right',
+          width: 180
         }
-      ],
-      defaultExpandAll: true
-
+      ]
     }
   },
   created() {

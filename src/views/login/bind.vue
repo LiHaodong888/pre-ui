@@ -3,7 +3,7 @@
     <div class="login-right">
       <div class="title-container">
         <h3 class="title">
-          {{ $t('login.title') }}
+          系统登录
         </h3>
       </div>
       <el-tabs v-model="activeName">

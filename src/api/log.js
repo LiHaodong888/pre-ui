@@ -14,3 +14,11 @@ export function deleteLog(id) {
     method: 'delete'
   })
 }
+
+export function getEsLogList(parms) {
+  return request({
+    url: '/es/page',
+    method: 'get',
+    params: parms
+  })
+}

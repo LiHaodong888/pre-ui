@@ -3,19 +3,22 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container" style="margin: 10px 0 10px 0;">
       <el-input
-        v-model="keyword"
+        v-model="query.name"
         clearable
         class="filter-item"
         style="width: 200px;"
         size="small"
-        placeholder="请输入岗位名称"
+        placeholder="请输入租户名称"
         @keyup.enter.native="handleFind"
       />
-      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFind">查找</el-button>
-      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加租户</el-button>
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">查询
+      </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-refresh" size="small" @click="handleReset">重置
+      </el-button>
+      <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加租户</el-button>
     </div>
 
-    <el-table v-loading="loading" :data="tableData" style="width: 100%" size="mini">
+    <el-table v-loading="loading" :data="tableData" border style="width: 100%">
 
       <el-table-column type="selection" />
       <el-table-column label="序号" width="60" align="center">
@@ -24,7 +27,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="租户名称" width="100" align="center">
+      <el-table-column label="租户名称" width="120" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.name }}</span>
         </template>
@@ -35,13 +38,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="授权开始时间" width="150" align="center">
+      <el-table-column label="授权开始时间" width="160" align="center">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startTime) }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="授权结束时间" width="150" align="center">
+      <el-table-column label="授权结束时间" width="160" align="center">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.endTime) }}</span>
         </template>
@@ -140,7 +143,9 @@ export default {
     return {
       size: 'small',
       tableData: [],
-      keyword: '',
+      query: {
+        name: ''
+      },
       title: '',
       dialogFormVisible: false, // 控制弹出框
       formLabelWidth: '120px',
@@ -187,7 +192,6 @@ export default {
       params.append('current', this.currentPage)
       params.append('size', this.pageSize)
       fetchList(params).then(response => {
-        console.log(response.data.data.records)
         this.loading = false
         this.tableData = response.data.data.records
         this.total = response.data.data.total
@@ -195,7 +199,13 @@ export default {
     },
     // 查找
     handleFind: function() {
-      this.getJobList()
+      this.fetchList()
+    },
+    handleReset: function() {
+      this.query = {
+        name: ''
+      }
+      this.fetchList()
     },
     // 换页
     handleCurrentChange: function(val) {

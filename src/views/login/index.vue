@@ -5,15 +5,10 @@
     class="login-container"
     :element-loading-text="'现在进行'+currentPath+'第三方登录,请稍等'"
   >
-    <div class="login-left">
-      <img src="https://gitee.com/li_haodong/picture_management/raw/master/pic/WechatIMG9.png" alt="" class="img">
-      <p class="title">Pre 权限管理快速开发框架</p>
-      <p>v 1.2</p>
-    </div>
     <div class="login-right">
       <div class="title-container">
         <h3 class="title">
-          {{ $t('login.title') }}
+          PRE 权限后台系统登录
         </h3>
         <el-select
           v-model="active"
@@ -38,7 +33,7 @@
             <el-form-item prop="username">
               <el-input
                 v-model="loginForm.username"
-                :placeholder="$t('login.username')"
+                placeholder="账号"
                 name="username"
                 type="text"
                 autocomplete="off"
@@ -52,7 +47,7 @@
             <el-form-item prop="password">
               <el-input
                 v-model="loginForm.password"
-                :placeholder="$t('login.password')"
+                placeholder="密码"
                 name="password"
                 type="password"
               >
@@ -68,12 +63,13 @@
                     v-model="loginForm.code"
                     type="test"
                     auto-complete="off"
-                    placeholder="验证码, 单击图片刷新"
+                    placeholder="请输入验证码"
                     style="width: 100%;"
                     @keyup.enter.native="handleLogin"
                   />
                 </el-form-item>
               </el-col>
+
               <el-col class="line" :span="1">&nbsp;</el-col>
               <el-col :span="11">
                 <el-form-item>
@@ -94,7 +90,7 @@
               style="width:100%;"
               @click.native.prevent="handleLogin"
             >
-              {{ $t('login.logIn') }}
+              登录
             </el-button>
           </el-form>
         </el-tab-pane>
@@ -126,14 +122,16 @@
                 v-model="phoneForm.code"
                 placeholder="请输入验证码"
                 name="code"
-                style="width: 275px;"
+                style="width: 65%;"
                 autocomplete="off"
               >
                 <i slot="prefix">
                   <svg-icon icon-class="短信" />
                 </i>
               </el-input>
-              <el-button :loading="codeLoading" :disabled="isDisabled" @click="sendCode">{{ buttonName }}</el-button>
+              <el-button :loading="codeLoading" style="width: 33%;" :disabled="isDisabled" @click="sendCode">{{
+                buttonName }}
+              </el-button>
             </el-form-item>
 
             <el-button
@@ -198,7 +196,28 @@
           </span>
           <span class="other-icon" @click="handleSocial('weixin')">
             <!--<a href='http://localhost:8081/auth/gitee'>-->
-            <svg t="1566549849419" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2078" width="19" height="20"><path d="M401.135 660.548c-35.499 0-61.167-6.007-94.481-15.292l-96.666 48.606 27.853-82.466c-68.267-47.514-108.134-107.588-108.134-181.316 0-129.98 122.334-229.376 271.428-229.376 131.618 0 249.583 78.097 272.521 189.508-9.83-1.638-18.022-2.731-25.668-2.731-129.98 0-230.468 97.758-230.468 215.177 0 20.207 2.731 38.229 7.646 57.344-7.646 0.546-16.384 0.546-24.03 0.546z" fill="#0ABB07" p-id="2079" /><path d="M799.812 754.483l19.115 68.813-72.636-40.96c-27.853 6.007-54.613 14.199-82.466 14.199-128.341 0-229.376-87.927-229.376-196.608 0-109.227 101.035-197.154 229.376-197.154 121.242 0 230.468 87.927 230.468 197.154 0 60.621-40.96 115.234-94.481 154.556z" fill="#0ABB07" p-id="2080" /><path d="M589.551 511.454c-13.107 0-26.761 12.561-26.761 27.853 0 12.561 13.107 24.576 26.761 24.576 20.207 0 34.406-12.561 34.406-24.576 0-15.292-14.199-27.853-34.406-27.853z m-87.928-128.888c21.299 0 34.406-13.107 34.406-33.314 0-21.299-13.107-33.314-34.406-33.314-20.207 0-39.322 12.561-39.322 33.314 0 20.207 19.115 33.314 39.322 33.314z m-189.508-66.628c-20.207 0-40.96 12.561-40.96 33.314 0 20.207 21.299 33.314 40.96 33.314 19.115 0 34.406-13.107 34.406-33.314 0-21.299-15.292-33.314-34.406-33.314z m427.623 195.516c-14.199 0-26.761 12.561-26.761 27.853 0 12.561 12.561 24.576 26.761 24.576 19.115 0 33.314-12.561 33.314-24.576 0-15.292-14.746-27.853-33.314-27.853z" fill="#FFFFFF" p-id="2081" /></svg>
+            <svg
+              t="1566549849419"
+              class="icon"
+              viewBox="0 0 1024 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              p-id="2078"
+              width="19"
+              height="20"
+            ><path
+              d="M401.135 660.548c-35.499 0-61.167-6.007-94.481-15.292l-96.666 48.606 27.853-82.466c-68.267-47.514-108.134-107.588-108.134-181.316 0-129.98 122.334-229.376 271.428-229.376 131.618 0 249.583 78.097 272.521 189.508-9.83-1.638-18.022-2.731-25.668-2.731-129.98 0-230.468 97.758-230.468 215.177 0 20.207 2.731 38.229 7.646 57.344-7.646 0.546-16.384 0.546-24.03 0.546z"
+              fill="#0ABB07"
+              p-id="2079"
+            /><path
+              d="M799.812 754.483l19.115 68.813-72.636-40.96c-27.853 6.007-54.613 14.199-82.466 14.199-128.341 0-229.376-87.927-229.376-196.608 0-109.227 101.035-197.154 229.376-197.154 121.242 0 230.468 87.927 230.468 197.154 0 60.621-40.96 115.234-94.481 154.556z"
+              fill="#0ABB07"
+              p-id="2080"
+            /><path
+              d="M589.551 511.454c-13.107 0-26.761 12.561-26.761 27.853 0 12.561 13.107 24.576 26.761 24.576 20.207 0 34.406-12.561 34.406-24.576 0-15.292-14.199-27.853-34.406-27.853z m-87.928-128.888c21.299 0 34.406-13.107 34.406-33.314 0-21.299-13.107-33.314-34.406-33.314-20.207 0-39.322 12.561-39.322 33.314 0 20.207 19.115 33.314 39.322 33.314z m-189.508-66.628c-20.207 0-40.96 12.561-40.96 33.314 0 20.207 21.299 33.314 40.96 33.314 19.115 0 34.406-13.107 34.406-33.314 0-21.299-15.292-33.314-34.406-33.314z m427.623 195.516c-14.199 0-26.761 12.561-26.761 27.853 0 12.561 12.561 24.576 26.761 24.576 19.115 0 33.314-12.561 33.314-24.576 0-15.292-14.746-27.853-33.314-27.853z"
+              fill="#FFFFFF"
+              p-id="2081"
+            /></svg>
             <!--</a>-->
           </span>
         </div>
@@ -215,7 +234,7 @@
 <script>
 import { formatData, getUrlKey } from '@/utils/webUtils'
 import { isvalidPhone } from '@/utils/validate'
-import { github } from '@/api/login'
+import { getImgCode } from '@/api/login'
 import { sendSms } from '@/api/user'
 import { setTenant } from '@/utils/tenant'
 import { getTenantList } from '@/api/tenant'
@@ -233,17 +252,9 @@ export default {
     // 验证手机号格式
     const validPhone = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请输入电话号码'))
+        callback(new Error('请输入手机号'))
       } else if (!isvalidPhone(value)) {
         callback(new Error('请输入正确的11位手机号码'))
-      } else {
-        callback()
-      }
-    }
-    // 验证码是否为空
-    const checkSmscode = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入手机验证码'))
       } else {
         callback()
       }
@@ -255,7 +266,7 @@ export default {
         password: '123456',
         code: '',
         token: '',
-        t: ''
+        key: ''
       },
       src: '',
       phoneForm: {
@@ -264,11 +275,12 @@ export default {
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur' }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       },
       phoneRules: {
         phone: [{ required: true, trigger: 'blur', validator: validPhone }],
-        code: [{ validator: checkSmscode, trigger: 'change' }]
+        code: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
 
       },
       passwordType: 'password',
@@ -287,15 +299,6 @@ export default {
       active: ''
     }
   },
-  // watch: {
-  //   $route: {
-  //     handler: function(route) {
-  //       this.redirect = route.query && route.query.redirect
-  //     },
-  //     immediate: true,
-  //
-  //   }
-  // },
   created() {
     this.getTenantList()
     this.refreshCaptcha()
@@ -351,10 +354,11 @@ export default {
       })
     },
     refreshCaptcha: function() {
-      this.loginForm.code = ''
-      this.loginForm.t = new Date().getTime()
-      // this.loginForm.src = process.env.BASE_API + '/captcha.jpg?t=' + this.loginForm.t
-      this.src = 'http://localhost:8081/captcha.jpg?t=' + this.loginForm.t
+      getImgCode().then(res => {
+        console.log(res)
+        this.src = res.data.data.img
+        this.loginForm.key = res.data.data.key
+      })
     },
     // 社交登录
     socialLogin() {
@@ -375,7 +379,7 @@ export default {
     sendCode() {
       if (this.phoneForm.phone !== '' && isvalidPhone(this.phoneForm.phone)) {
         this.codeLoading = true
-        this.buttonName = '验证码发送中'
+        this.buttonName = '发送中'
         const _this = this
         sendSms(this.phoneForm.phone).then(res => {
           if (res.data.code === 200) {
@@ -386,9 +390,9 @@ export default {
             })
             this.codeLoading = false
             this.isDisabled = true
-            this.buttonName = this.time-- + '秒后重新发送'
+            this.buttonName = this.time-- + '秒'
             this.timer = window.setInterval(function() {
-              _this.buttonName = _this.time + '秒后重新发送'
+              _this.buttonName = _this.time + '秒'
               --_this.time
               if (_this.time < 0) {
                 _this.buttonName = '重新发送'
@@ -438,33 +442,19 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
   .login-container {
-    width: 1000px;
     display: flex;
-    border-radius: 5px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 0 25px #cac6c6;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 40px 0;
-
-    .login-left {
-      width: 50%;
-      /*background: #1F79D6;*/
-      text-align: center;
-      padding-top: 90px;
-      border-right: 1px solid #00000055;
-
-      img {
-        width: 140px;
-      }
-    }
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-image: url(https://img2018.cnblogs.com/blog/1211637/201908/1211637-20190809112720089-1507550740.png);
+    /*background: red;*/
+    background-size: cover;
 
     .login-right {
-      width: 50%;
-      padding: 35px;
+      width: 30%;
+      padding: 50px;
+      border-radius: 6px;
+      background: #ffffff;
 
       .title {
         margin: 0 auto 30px auto;
@@ -472,8 +462,8 @@ export default {
         color: #505458;
       }
 
-      .remember {
-        margin: 0 0 35px 0;
+      .login-form {
+        height: 50%;
       }
 
       .el-form-item {
@@ -502,6 +492,7 @@ export default {
       .other-login .other-way {
         font-size: 14px;
         color: #515a6e;
+        width: calc(100% - 56px)
       }
 
       .register {
@@ -509,7 +500,6 @@ export default {
         color: #1ab2ff;
         font-size: 14px;
         cursor: pointer;
-        width: calc(100% - 160px);
         text-align: right;
       }
 
@@ -522,7 +512,6 @@ export default {
           font-size: 14px;
           font-weight: 400;
           border: none;
-          text-align: center;
         }
       }
     }

@@ -1,23 +1,35 @@
 <template>
+
   <div class="app-container">
     <!-- 查询和其他操作 -->
     <div class="filter-container" style="margin: 10px 0 10px 0;">
-      <el-input
-        v-model="keyword"
-        clearable
-        class="filter-item"
-        style="width: 200px;"
-        size="small"
-        placeholder="请输入角色名称"
-        @keyup.enter.native="handleFind"
-      />
-      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-search" @click="handleFind">查找
-      </el-button>
-      <el-button class="filter-item" size="mini" type="primary" icon="el-icon-plus" @click="handleAdd">添加角色</el-button>
+      <el-row :gutter="10">
+        <el-col :span="6">
+          <div class="grid-content bg-purple">
+            <el-input
+              v-model="query.roleName"
+              clearable
+              class="filter-item"
+              style="width: 200px;"
+              size="small"
+              placeholder="请输入角色名称"
+              @keyup.enter.native="handleFind"
+            />
+          </div>
+        </el-col>
+        <el-col :span="9">
+          <div class="grid-content bg-purple">
+            <el-button class="filter-item" size="small" type="primary" icon="el-icon-search" @click="handleFind">搜索
+            </el-button>
+            <el-button class="filter-item" size="small" type="primary" icon="el-icon-refresh" @click="handleReset">重置
+            </el-button>
+            <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加
+            </el-button>
+          </div>
+        </el-col>
+      </el-row>
     </div>
-
-    <el-table v-loading="loading" :data="tableData" style="width: 100%" size="mini">
-
+    <el-table v-loading="loading" :data="tableData" border style="width: 100%">
       <el-table-column type="selection" />
       <el-table-column label="序号" width="60" align="center">
         <template slot-scope="scope">
@@ -51,8 +63,8 @@
 
       <el-table-column label="操作" fixed="right" min-width="150" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button size="small" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="small" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -109,8 +121,8 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button size="small" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -124,7 +136,6 @@ import { parseTime } from '@/utils/index'
 import { getDeptTree } from '@/api/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import { formatData, getPar } from '@/utils/webUtils'
 
 export default {
   components: {
@@ -159,6 +170,9 @@ export default {
       deptTreeProps: {
         label: 'name',
         children: 'children'
+      },
+      query: {
+        roleName: ''
       },
       form: {
         roleId: 0,
@@ -200,7 +214,7 @@ export default {
     roleList: function() {
       this.loading = true
       const params = new URLSearchParams()
-      params.append('roleName', this.keyword)
+      params.append('roleName', this.query.roleName)
       getRoleList(params).then(response => {
         this.tableData = response.data.data
         this.loading = false
@@ -250,6 +264,12 @@ export default {
     },
 
     handleFind: function() {
+      this.roleList()
+    },
+    handleReset: function() {
+      this.query = {
+        roleName: ''
+      }
       this.roleList()
     },
     // 添加角色

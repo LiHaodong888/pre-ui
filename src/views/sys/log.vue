@@ -11,10 +11,10 @@
         placeholder="请输入操作人名称"
         @keyup.enter.native="handleFind"
       />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" size="mini" @click="handleFind">查找</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" @click="handleFind">查找</el-button>
     </div>
 
-    <el-table v-loading="loading" :data="tableData" style="width: 100%" size="mini">
+    <el-table v-loading="loading" :data="tableData" border style="width: 100%">
       <el-table-column type="selection" />
 
       <el-table-column label="序号" width="60" align="center">
@@ -23,13 +23,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作人" width="100" align="center">
+      <el-table-column label="操作人" width="80" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.userName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="类型" width="80" align="center">
+      <el-table-column label="类型" width="60" align="center">
         <template slot-scope="scope">
           <template v-if="scope.row.type === 1">
             <span>正常</span>
@@ -40,7 +40,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="描述" width="160" align="center">
+      <el-table-column label="描述" width="150" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.description }}</span>
         </template>
@@ -48,26 +48,41 @@
 
       <el-table-column label="IP" width="120" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.requestIp }}</span>
+          <span>{{ scope.row.ip }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作地点" width="200" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.location }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作系统" width="120" :show-overflow-tooltip="true" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.os }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="浏览器" width="100" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.browser }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="请求方式" width="90" align="center">
+      <el-table-column label="请求方式" width="80" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.requestMethod }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="请求URL" width="160" align="center" sortable>
+      <el-table-column label="请求URL" width="160" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.actionUrl }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="请求时间(毫秒)" width="80" align="center" sortable>
+      <el-table-column label="请求时间" width="70" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.consumingTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="160" align="center" sortable>
+      <el-table-column label="创建时间" width="160" align="center">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startTime) }}</span>
         </template>

@@ -36,7 +36,7 @@ export default {
 
       const first = matched[0]
       if (first && first.name.trim().toLocaleLowerCase() !== 'Dashboard'.toLocaleLowerCase()) {
-        matched = [{ path: '/dashboard', meta: { title: 'dashboard' }}].concat(matched)
+        matched = [{ path: '/dashboard', meta: { title: '主页' }}].concat(matched)
       }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
