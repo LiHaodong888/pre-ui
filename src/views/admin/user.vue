@@ -93,12 +93,13 @@
         </el-table>
 
         <!--分页-->
-        <div class="block">
+        <div class="pagination">
           <el-pagination
             :current-page.sync="currentPage"
             :page-size="pageSize"
             layout="total, prev, pager, next, jumper"
             :total="total"
+            background
             @current-change="handleCurrentChange"
           />
         </div>
@@ -124,7 +125,7 @@
                 :data="deptData"
                 :props="deptTreeProps"
                 :prop="dataForm.deptName"
-                :node-key="''+dataForm.deptId"
+                :node-key="dataForm.deptId"
                 :current-change-handle="deptTreeCurrentChangeHandle"
               />
             </el-form-item>
@@ -194,7 +195,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 0, // 总数量
-      deptId: 0,
+      deptId: '',
       dialogFormVisible: false, // 控制弹出框
       formLabelWidth: '120px',
       query: {
@@ -203,7 +204,7 @@ export default {
       dataForm: {
         username: '',
         avatar: '',
-        deptId: 1,
+        deptId: '',
         deptName: '',
         email: 'lihaodongmail@163.com',
         phone: '17521296869',
@@ -288,7 +289,7 @@ export default {
       this.operation = true
       this.dataForm = {
         username: '',
-        deptId: 1,
+        deptId: '',
         deptName: '',
         jobId: '',
         email: 'lihaodongmail@163.com',
@@ -381,7 +382,7 @@ export default {
     },
 
     handleNodeClick(data) {
-      this.deptId = data.deptId === 0 ? 0 : data.deptId
+      this.deptId = data.deptId === '' ? '' : data.deptId
       this.adminList()
     },
     submitForm: function() {

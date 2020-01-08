@@ -84,7 +84,7 @@
       </el-table-column>
       <el-table-column label="创建时间" width="160" align="center">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.startTime) }}</span>
+          <span>{{ scope.row.startTime }}</span>
         </template>
       </el-table-column>
 
@@ -96,13 +96,14 @@
     </el-table>
 
     <!--分页-->
-    <div class="block">
+    <div class="pagination">
       <el-pagination
         :current-page.sync="currentPage"
         :page-sizes="[10, 20, 30, 50]"
         :page-size="pageSize"
         layout="total, prev, pager, next,sizes, jumper"
         :total="total"
+        background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />

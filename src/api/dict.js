@@ -68,3 +68,11 @@ export const updateDictItem = (data) => {
     data: data
   })
 }
+
+// 根据主键删除字典详情
+export const deleteDictItem = (id) => {
+  return request({
+    url: '/dictItem/' + id,
+    method: 'delete'
+  })
+}

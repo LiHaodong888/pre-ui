@@ -35,7 +35,7 @@
 
       <el-table-column label="操作" width="250" align="center">
         <template slot-scope="scope">
-          <el-button slot="reference" size="small" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button slot="reference" type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
           <el-popover
             :ref="scope.row.dictName"
             placement="top"
@@ -44,25 +44,28 @@
             <p>此操作将删除字典与对应的字典详情，确定要删除吗？</p>
             <div style="text-align: right; margin: 0">
               <el-button size="mini" type="text" @click="$refs[scope.row.dictName].doClose()">取消</el-button>
-              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.name)">确定
+              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定
               </el-button>
             </div>
-            <el-button slot="reference" type="danger" size="small">删除</el-button>
+            <el-button slot="reference" icon="el-icon-delete" type="text">删除</el-button>
           </el-popover>
-          <el-button slot="reference" type="primary" size="small" @click="a(scope.row.id)">字典值</el-button>
+          <el-button slot="reference" icon="el-icon-s-grid" type="text" @click="a(scope.row.id)">字典值</el-button>
         </template>
       </el-table-column>
     </el-table>
+
     <!--分页-->
-    <div class="block">
+    <div class="pagination">
       <el-pagination
         :current-page.sync="currentPage"
         :page-size="pageSize"
         layout="total, prev, pager, next, jumper"
         :total="total"
+        background
         @current-change="handleCurrentChange"
       />
     </div>
+
     <!--新增-->
     <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增字典' : '编辑字典'" width="500px">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -209,50 +212,16 @@ export default {
     },
     // 删除操作
     subDelete(val) {
-      if (this.qqdialog) {
-        deleteDict(val).then(res => {
-          if (res.data.code === 200) {
-            this.delLoading = false
-            this.handleChange(this.dictName)
-            this.$notify({
-              title: '删除成功',
-              type: 'success',
-              duration: 2500
-            })
-          } else {
-            this.$notify({
-              title: res.data.msg,
-              type: 'error',
-              duration: 2500
-            })
-          }
-        }).catch(err => {
+      deleteDict(val).then(res => {
+        if (res.data.code === 200) {
           this.delLoading = false
-          console.log(err.response.data.message)
-        })
-      } else {
-        this.delLoading = true
-        deleteDictByName(val).then(res => {
-          if (res.data.code === 200) {
-            this.delLoading = false
-            this.$notify({
-              title: '删除成功',
-              type: 'success',
-              duration: 2500
-            })
-            this.getDictData()
-          } else {
-            this.$notify({
-              title: res.data.msg,
-              type: 'error',
-              duration: 2500
-            })
-          }
-        }).catch(err => {
-          this.delLoading = false
-          console.log(err.response.data.message)
-        })
-      }
+          this.$message({ message: '删除成功', type: 'success' })
+          this.getDictData()
+        }
+      }).catch(err => {
+        this.delLoading = false
+        console.log(err.response.data.message)
+      })
     },
     // 换页
     handleCurrentChange: function(val) {

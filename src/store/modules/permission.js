@@ -1,4 +1,4 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import { constantRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/views/layout/Layout'
 
@@ -31,6 +31,7 @@ const permission = {
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap) {
   return asyncRouterMap.filter(route => {
+    console.log(route.component)
     if (route.component) {
       // Layout组件特殊处理
       if (route.component === 'Layout') {

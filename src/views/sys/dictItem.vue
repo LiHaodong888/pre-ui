@@ -26,7 +26,7 @@
         <el-table-column label="操作" width="140px" align="center">
 
           <template slot-scope="scope">
-            <el-button slot="reference" size="mini" @click="handleValueEdit(scope.row)">编辑</el-button>
+            <el-button slot="reference" type="text" icon="el-icon-edit" @click="handleValueEdit(scope.row)">编辑</el-button>
             <el-popover
               :ref="scope.row.id"
               placement="top"
@@ -35,22 +35,23 @@
               <p>确定删除本条数据吗？</p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
-                <el-button :loading="loading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定
+                <el-button :loading="loading" type="text" @click="subDelete(scope.row.id)">确定
                 </el-button>
               </div>
-              <el-button slot="reference" type="danger" size="mini">删除</el-button>
+              <el-button slot="reference" icon="el-icon-delete" type="text">删除</el-button>
             </el-popover>
           </template>
         </el-table-column>
       </el-table>
 
       <!--分页-->
-      <div class="block">
+      <div class="pagination">
         <el-pagination
           :current-page.sync="currentPage"
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
           :total="total"
+          background
           @current-change="handleCurrentChange"
         />
       </div>
@@ -81,7 +82,7 @@
 </template>
 
 <script>
-import { addDictItem, updateDictItem, queryDictItemList } from '@/api/dict'
+import { addDictItem, updateDictItem, queryDictItemList, deleteDictItem } from '@/api/dict'
 
 export default {
   name: 'DictItem',
@@ -126,6 +127,18 @@ export default {
       this.isValueAdd = false
       this.form = row
       this.form.name = this.dictName
+    },
+    // 删除操作
+    subDelete(val) {
+      deleteDictItem(val).then(res => {
+        if (res.data.code === 200) {
+          this.$message({ message: '删除成功', type: 'success' })
+          this.doSubmit(this.dictId)
+          this.resetForm('form')
+        }
+      }).catch(err => {
+        console.log(err.response.data.msg)
+      })
     },
     // 字典值提交操作
     doDetailSubmit() {

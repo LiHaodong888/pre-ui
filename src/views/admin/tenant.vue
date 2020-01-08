@@ -61,19 +61,20 @@
 
       <el-table-column label="操作" fixed="right" min-width="150" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!--分页-->
-    <div class="block">
+    <div class="pagination">
       <el-pagination
         :current-page.sync="currentPage"
         :page-size="pageSize"
         layout="total, prev, pager, next, jumper"
         :total="total"
+        background
         @current-change="handleCurrentChange"
       />
     </div>

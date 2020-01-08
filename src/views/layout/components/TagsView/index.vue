@@ -228,8 +228,8 @@ export default {
           /*border-color: #42b983;*/
           &::before {
             content: '';
-            background: #85ef47!important;
-            box-shadow: 0 0 7px #b7eb8f;
+            background: #2C7DFF!important;
+            box-shadow: 0 0 7px #2C7BFB;
             display: inline-block;
             bottom: 3px;
             width: 5px;

@@ -57,14 +57,14 @@
 
       <el-table-column label="创建时间" width="160" align="center" prop="createTime">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" fixed="right" min-width="150" align="center">
         <template slot-scope="scope">
-          <el-button size="small" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="small" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -309,6 +309,7 @@ export default {
 
     // 角色选择改变监听
     handleRoleSelectChange(id) {
+      console.log(id)
       this.selectRole.id = id
       findRoleMenus(id).then((res) => {
         this.$refs.menuTree.setCheckedNodes(res.data.data)
@@ -363,8 +364,7 @@ export default {
           this.form.roleDepts = depts
         }
       }
-
-      const roleId = this.selectRole.id > 0 ? this.selectRole.id : 0
+      const roleId = this.selectRole.id !== '' ? this.selectRole.id : '0'
       const checkedNodes = this.$refs.menuTree.getCheckedNodes(false, true)
       const roleMenus = []
       for (let i = 0, len = checkedNodes.length; i < len; i++) {
@@ -415,6 +415,7 @@ export default {
     // 加载部门列表
     findDeptTree: function() {
       getDeptTree().then((res) => {
+        console.log(res)
         this.deptData = res.data.data
       })
     },

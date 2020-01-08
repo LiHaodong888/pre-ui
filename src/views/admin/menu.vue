@@ -16,25 +16,66 @@
       <el-button class="filter-item" size="small" type="primary" icon="el-icon-plus" @click="handleAdd">添加菜单</el-button>
     </div>
 
-    <!--表格树内容栏-->
-    <tree-table
-      :key="key"
+    <el-table
       :data="tableTreeData"
-      :columns="columns"
+      style="width: 100%;margin-bottom: 20px;"
+      row-key="menuId"
+      border
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <template slot="icon" slot-scope="{scope}">
-        <svg-icon :icon-class="scope.row.icon" />
-      </template>
-      <template slot="type" slot-scope="{scope}">
-        <el-tag v-if="scope.row.type === 0" size="small">目录</el-tag>
-        <el-tag v-else-if="scope.row.type === 1" size="small" type="success">菜单</el-tag>
-        <el-tag v-else-if="scope.row.type === 2" size="small" type="info">按钮</el-tag>
-      </template>
-      <template slot="operation" slot-scope="{scope}">
-        <el-button size="small" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-        <el-button size="small" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
-      </template>
-    </tree-table>
+      <el-table-column
+        prop="name"
+        label="名称"
+        sortable
+        width="180"
+      />
+      <el-table-column label="图标" align="center">
+        <template slot-scope="scope">
+          <svg-icon :icon-class="scope.row.icon" />
+        </template>
+      </el-table-column>
+
+      <el-table-column label="类型" align="center">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.type === 0" size="small">目录</el-tag>
+          <el-tag v-else-if="scope.row.type === 1" size="small" type="success">菜单</el-tag>
+          <el-tag v-else-if="scope.row.type === 2" size="small" type="info">按钮</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="parentName"
+        label="上级菜单"
+        align="center"
+      />
+      <el-table-column
+        prop="path"
+        label="菜单URL"
+        align="center"
+      />
+      <el-table-column
+        prop="component"
+        label="菜单组件"
+        align="center"
+        width="120"
+      />
+      <el-table-column
+        prop="perms"
+        label="授权标识"
+        align="center"
+        width="180"
+      />
+      <el-table-column
+        prop="sort"
+        label="排序"
+        align="center"
+      />
+      <el-table-column label="操作" fixed="right" min-width="150" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
     <!-- 新增修改界面 -->
     <el-dialog
@@ -141,13 +182,12 @@
 
 <script>
 import PopupTreeInput from '@/components/PopupTreeInput'
-import treeTable from '@/components/TreeTable'
 import IconSelect from '@/components/IconSelect'
 import { saveMenu, getMenuTree, updateMenu, deleteMenu } from '@/api/menu'
 import { formatData, getPar } from '@/utils/webUtils'
 
 export default {
-  components: { PopupTreeInput, IconSelect, treeTable },
+  components: { PopupTreeInput, IconSelect },
   data() {
     return {
       size: 'small',

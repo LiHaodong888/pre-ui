@@ -10,15 +10,6 @@
         <h3 class="title">
           PRE 权限后台系统登录
         </h3>
-        <el-select
-          v-model="active"
-          placeholder="点击请选择租户"
-          size="mini"
-          class="login-select"
-          @change="handleTenant"
-        >
-          <el-option v-for="tenant in tenantList" :key="tenant.id" :label="tenant.name" :value="tenant.id" />
-        </el-select>
       </div>
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane name="loginForm">
@@ -236,8 +227,6 @@ import { formatData, getUrlKey } from '@/utils/webUtils'
 import { isvalidPhone } from '@/utils/validate'
 import { getImgCode } from '@/api/login'
 import { sendSms } from '@/api/user'
-import { setTenant } from '@/utils/tenant'
-import { getTenantList } from '@/api/tenant'
 
 export default {
   name: 'Login',
@@ -300,7 +289,6 @@ export default {
     }
   },
   created() {
-    this.getTenantList()
     this.refreshCaptcha()
     this.socialLogin()
   },
@@ -427,14 +415,6 @@ export default {
       this.$router.push({
         path: '/register'
       })
-    },
-    handleTenant(tenantId) {
-      setTenant(tenantId)
-    },
-    getTenantList() {
-      getTenantList().then(res => {
-        this.tenantList = res.data.data
-      })
     }
   }
 }
@@ -446,7 +426,8 @@ export default {
     justify-content: center;
     align-items: center;
     height: 100%;
-    background-image: url(https://img2018.cnblogs.com/blog/1211637/201908/1211637-20190809112720089-1507550740.png);
+    /*background-image: url(https://img2018.cnblogs.com/blog/1211637/201908/1211637-20190809112720089-1507550740.png);*/
+    background-image: url('../../assets/63048029b07252112f0033e8e3c52865.jpg');
     /*background: red;*/
     background-size: cover;
 

@@ -63,7 +63,7 @@
     </el-table>
 
     <!--分页-->
-    <div class="block">
+    <div class="pagination">
       <el-pagination
         :current-page.sync="currentPage"
         :page-size="pageSize"
